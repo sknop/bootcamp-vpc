@@ -32,6 +32,11 @@ variable "private-subnet-3-cidr" {
   type = string
 }
 
+variable "my-ip" {
+  description = "IP Address from which to get access to the public subnet in CIDR format (usually /32)"
+  type = string
+}
+
 variable "owner_email" {
   type = string
 }
