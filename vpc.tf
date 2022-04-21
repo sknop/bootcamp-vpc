@@ -118,6 +118,12 @@ resource "aws_security_group" "all-bootcamp" {
     protocol         = "-1"
     cidr_blocks      = ["0.0.0.0/0"]
   }
+
+  tags = {
+    Name = "Partner Bootcamp Internal Access"
+    owner_email = var.owner_email
+    owner_name = var.owner_name
+  }
 }
 
 resource "aws_security_group" "external-access" {
@@ -139,4 +145,11 @@ resource "aws_security_group" "external-access" {
     protocol         = "-1"
     cidr_blocks      = ["0.0.0.0/0"]
   }
+
+  tags = {
+    Name = "Partner Bootcamp External Access"
+    owner_email = var.owner_email
+    owner_name = var.owner_name
+  }
 }
+
