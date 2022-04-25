@@ -16,6 +16,10 @@ resource "aws_vpc" "vpc" {
   }
 }
 
+data "http" "myip" {
+  url = "https://checkip.amazonaws.com"
+}
+
 resource "aws_internet_gateway" "internet-gateway" {
   vpc_id = aws_vpc.vpc.id
 
@@ -29,7 +33,7 @@ resource "aws_internet_gateway" "internet-gateway" {
 resource "aws_subnet" "bootcamp-public-subnet" {
   vpc_id = aws_vpc.vpc.id
   cidr_block = var.public-subnet-cidr
-  availability_zone = "eu-west-1a"
+  availability_zone = "us-east-1a"
   map_public_ip_on_launch = true
 
   tags = {
@@ -59,41 +63,14 @@ resource "aws_route_table_association" "public-subnet-route-table-association" {
   route_table_id = aws_route_table.public-route-table.id
 }
 
-resource "aws_subnet" "bootcamp-private-subnet-1" {
+resource "aws_subnet" "bootcamp-private-subnet" {
+  for_each             = { for subnet in var.private-subnets : subnet.name => subnet}
   vpc_id = aws_vpc.vpc.id
-  cidr_block = var.private-subnet-1-cidr
-  availability_zone = "eu-west-1a"
+  cidr_block = each.value.cidr_block
+  availability_zone = each.value.availability_zone
   map_public_ip_on_launch = false
 
   tags = {
-    Name = "Bootcamp Private Subnet 1"
-    owner_email = var.owner_email
-    owner_name = var.owner_name
-  }
-}
-
-resource "aws_subnet" "bootcamp-private-subnet-2" {
-  vpc_id = aws_vpc.vpc.id
-  cidr_block = var.private-subnet-2-cidr
-  availability_zone = "eu-west-1b"
-  map_public_ip_on_launch = false
-
-  tags = {
-    Name = "Bootcamp Private Subnet 2"
-    owner_email = var.owner_email
-    owner_name = var.owner_name
-  }
-}
-
-
-resource "aws_subnet" "bootcamp-private-subnet-3" {
-  vpc_id = aws_vpc.vpc.id
-  cidr_block = var.private-subnet-3-cidr
-  availability_zone = "eu-west-1c"
-  map_public_ip_on_launch = false
-
-  tags = {
-    Name = "Bootcamp Private Subnet 3"
     owner_email = var.owner_email
     owner_name = var.owner_name
   }
@@ -136,7 +113,7 @@ resource "aws_security_group" "external-access" {
     from_port = 0
     to_port = 0
     protocol = "-1"
-    cidr_blocks = [var.my-ip]
+    cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
   }
 
   egress {
