@@ -32,9 +32,13 @@ variable "private-subnet-3-cidr" {
   type = string
 }
 
-variable "my-ip" {
-  description = "IP Address from which to get access to the public subnet in CIDR format (usually /32)"
-  type = string
+variable "private-subnets" {
+  description = "Map of Private Subnets"
+  type = list(object({
+    name = string
+    cidr_block = string
+    availability_zone = string
+  }))
 }
 
 variable "owner_email" {
