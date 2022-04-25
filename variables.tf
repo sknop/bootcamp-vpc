@@ -8,28 +8,13 @@ variable "vpc-cidr" {
   type = string
 }
 
-variable "public-subnet-cidr" {
-  default = "172.32.0.0/24"
-  description = "Public subnet CIDR"
-  type = string
-}
-
-variable "private-subnet-1-cidr" {
-  default = "172.32.1.0/24"
-  description = "Private subnet 1 CIDR"
-  type = string
-}
-
-variable "private-subnet-2-cidr" {
-  default = "172.32.2.0/24"
-  description = "Private subnet 2 CIDR"
-  type = string
-}
-
-variable "private-subnet-3-cidr" {
-  default = "172.32.3.0/24"
-  description = "Private subnet 3 CIDR"
-  type = string
+variable "public-subnet" {
+  description = "Public Subnet"
+  type = object({
+    name = string
+    cidr_block = string
+    availability_zone = string
+  })
 }
 
 variable "private-subnets" {

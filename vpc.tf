@@ -32,8 +32,8 @@ resource "aws_internet_gateway" "internet-gateway" {
 
 resource "aws_subnet" "bootcamp-public-subnet" {
   vpc_id = aws_vpc.vpc.id
-  cidr_block = var.public-subnet-cidr
-  availability_zone = "us-east-1a"
+  cidr_block = var.public-subnet.cidr_block
+  availability_zone = var.public-subnet.availability_zone
   map_public_ip_on_launch = true
 
   tags = {

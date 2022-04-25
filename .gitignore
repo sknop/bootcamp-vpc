@@ -2,3 +2,5 @@
 .idea
 .terraform
 bootcamp.pem
+.terraform.lock.hcl
+terraform.tfstate.backup

@@ -1,10 +1,11 @@
 region = "eu-west-1"
 vpc-cidr = "172.32.0.0/16"
 
-public-subnet-cidr = "172.32.0.0/24"
-private-subnet-1-cidr = "172.32.1.0/24"
-private-subnet-2-cidr = "172.32.2.0/24"
-private-subnet-3-cidr = "172.32.3.0/24"
+public-subnet = { 
+    "name" = "public-subnet",
+    "cidr_block" = "172.32.0.0/24",
+    "availability_zone" = "eu-west-1a"
+}
 
 private-subnets = [
     {
