@@ -8,27 +8,25 @@ variable "vpc-cidr" {
   type = string
 }
 
+variable "availability-zones" {
+  description = "The availability zones for this region"
+  type = list
+}
+
 variable "public-subnet-cidr" {
   default = "172.32.0.0/24"
   description = "Public subnet CIDR"
   type = string
 }
 
-variable "private-subnet-1-cidr" {
-  default = "172.32.1.0/24"
-  description = "Private subnet 1 CIDR"
-  type = string
+variable "private-subnets-cidr" {
+  description = "Private subnet CIDR"
+  type = list
 }
 
-variable "private-subnet-2-cidr" {
-  default = "172.32.2.0/24"
-  description = "Private subnet 2 CIDR"
-  type = string
-}
-
-variable "private-subnet-3-cidr" {
-  default = "172.32.3.0/24"
-  description = "Private subnet 3 CIDR"
+variable "bootcamp-key-name" {
+  default = "bootcamp-partner-key"
+  description = "Name of key in AWS"
   type = string
 }
 

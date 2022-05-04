@@ -2,3 +2,4 @@
 .idea
 .terraform
 bootcamp.pem
+/.terraform.lock.hcl

@@ -23,9 +23,19 @@ output "bootcamp-security-group" {
   value = aws_security_group.all-bootcamp.id
 }
 
-output "subnet-for-az1" {
-  description = "Single Subnet (1 AZ) for creating Confluent Cluster"
-  value = aws_subnet.bootcamp-private-subnet-1.id
+output "subnets-az1" {
+  description = "Subnet AZ1 for creating Confluent Cluster"
+  value = aws_subnet.bootcamp-private-subnet[0].id
+}
+
+output "subnets-az2" {
+  description = "Subnet AZ2 for creating Confluent Cluster"
+  value = aws_subnet.bootcamp-private-subnet[1].id
+}
+
+output "subnets-az3" {
+  description = "Subnet AZ3 for creating Confluent Cluster"
+  value = aws_subnet.bootcamp-private-subnet[2].id
 }
 
 output "hosted-zone-id" {

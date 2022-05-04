@@ -8,7 +8,6 @@ resource "aws_vpc" "vpc" {
   instance_tenancy = "default"
   enable_dns_hostnames = true
 
-
   tags = {
     Name = "partner-bootcamp-vpc"
     owner_email = var.owner_email
@@ -26,6 +25,25 @@ resource "aws_internet_gateway" "internet-gateway" {
   }
 }
 
+# Elastic-IP (eip) for NAT
+resource "aws_eip" "nat_eip" {
+  vpc = true
+  depends_on = [aws_internet_gateway.internet-gateway]
+}
+
+# NAT
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat_eip.id
+  subnet_id     = aws_subnet.bootcamp-public-subnet.id
+
+  tags = {
+    Name        = "Bootcamp NAT"
+    owner_email = var.owner_email
+    owner_name = var.owner_name
+  }
+}
+
+
 resource "aws_subnet" "bootcamp-public-subnet" {
   vpc_id = aws_vpc.vpc.id
   cidr_block = var.public-subnet-cidr
@@ -42,11 +60,6 @@ resource "aws_subnet" "bootcamp-public-subnet" {
 resource "aws_route_table" "public-route-table" {
   vpc_id = aws_vpc.vpc.id
 
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.internet-gateway.id
-  }
-
   tags = {
     Name = "Bootcamp Public Route Table"
     owner_email = var.owner_email
@@ -54,15 +67,41 @@ resource "aws_route_table" "public-route-table" {
   }
 }
 
+resource "aws_route_table" "private-route-table" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = {
+    Name = "Bootcamp Private Route Table"
+    owner_email = var.owner_email
+    owner_name = var.owner_name
+  }
+}
+
+# Route for Internet Gateway
+resource "aws_route" "public_internet_gateway" {
+  route_table_id         = aws_route_table.public-route-table.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.internet-gateway.id
+}
+
+# Route for NAT
+resource "aws_route" "private_nat_gateway" {
+  route_table_id         = aws_route_table.private-route-table.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.nat.id
+}
+
+
 resource "aws_route_table_association" "public-subnet-route-table-association" {
   subnet_id = aws_subnet.bootcamp-public-subnet.id
   route_table_id = aws_route_table.public-route-table.id
 }
 
-resource "aws_subnet" "bootcamp-private-subnet-1" {
+resource "aws_subnet" "bootcamp-private-subnet" {
   vpc_id = aws_vpc.vpc.id
-  cidr_block = var.private-subnet-1-cidr
-  availability_zone = "eu-west-1a"
+  count = length(var.private-subnets-cidr)
+  cidr_block = element(var.private-subnets-cidr, count.index)
+  availability_zone = element(var.availability-zones, count.index)
   map_public_ip_on_launch = false
 
   tags = {
@@ -72,31 +111,10 @@ resource "aws_subnet" "bootcamp-private-subnet-1" {
   }
 }
 
-resource "aws_subnet" "bootcamp-private-subnet-2" {
-  vpc_id = aws_vpc.vpc.id
-  cidr_block = var.private-subnet-2-cidr
-  availability_zone = "eu-west-1b"
-  map_public_ip_on_launch = false
-
-  tags = {
-    Name = "Bootcamp Private Subnet 2"
-    owner_email = var.owner_email
-    owner_name = var.owner_name
-  }
-}
-
-
-resource "aws_subnet" "bootcamp-private-subnet-3" {
-  vpc_id = aws_vpc.vpc.id
-  cidr_block = var.private-subnet-3-cidr
-  availability_zone = "eu-west-1c"
-  map_public_ip_on_launch = false
-
-  tags = {
-    Name = "Bootcamp Private Subnet 3"
-    owner_email = var.owner_email
-    owner_name = var.owner_name
-  }
+resource "aws_route_table_association" "private-subnet-route-table-association" {
+  count = length(var.private-subnets-cidr)
+  subnet_id      = element(aws_subnet.bootcamp-private-subnet.*.id, count.index)
+  route_table_id = aws_route_table.private-route-table.id
 }
 
 resource "aws_security_group" "all-bootcamp" {
