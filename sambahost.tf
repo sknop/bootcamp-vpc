@@ -14,8 +14,6 @@ resource "aws_instance" "sambahost" {
   tags = {
     Name        = "Bootcamp Sambahost"
     description = "Sambahost for Bootcamp - Managed by Terraform"
-    Owner_Name  = var.owner_name
-    Owner_Email = var.owner_email
     sshUser     = "ubuntu"
     region      = var.region
   }
