@@ -13,6 +13,11 @@ variable "availability-zones" {
   type = list
 }
 
+variable "public-availability-zone" {
+  description = "The availability zone for the public subnet"
+  type = string
+}
+
 variable "public-subnet-cidr" {
   default = "172.32.0.0/24"
   description = "Public subnet CIDR"

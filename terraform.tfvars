@@ -3,6 +3,7 @@ vpc-cidr = "172.32.0.0/16"
 public-subnet-cidr = "172.32.0.0/24"
 private-subnets-cidr = [ "172.32.1.0/24", "172.32.2.0/24", "172.32.3.0/24" ]
 availability-zones = [ "eu-west-1a", "eu-west-1b", "eu-west-1c" ]
+public-availability-zone = "eu-west-1a"
 
 bootcamp-key-name = "bootcamp-partner-key"
 

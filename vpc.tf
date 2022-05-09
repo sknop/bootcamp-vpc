@@ -47,7 +47,7 @@ resource "aws_nat_gateway" "nat" {
 resource "aws_subnet" "bootcamp-public-subnet" {
   vpc_id = aws_vpc.vpc.id
   cidr_block = var.public-subnet-cidr
-  availability_zone = "eu-west-1a"
+  availability_zone = var.public-availability-zone
   map_public_ip_on_launch = true
 
   tags = {
