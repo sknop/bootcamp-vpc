@@ -1,17 +1,10 @@
-
-provider "aws" {
-  region = var.region
-}
-
 resource "aws_vpc" "vpc" {
   cidr_block = var.vpc-cidr
   instance_tenancy = "default"
   enable_dns_hostnames = true
 
   tags = {
-    Name = "partner-bootcamp-vpc"
-    owner_email = var.owner_email
-    owner_name = var.owner_name
+    Name = "partner-bootcamp-vpc"  
   }
 }
 
@@ -20,8 +13,6 @@ resource "aws_internet_gateway" "internet-gateway" {
 
   tags = {
     Name = "Bootcamp IGW"
-    owner_email = var.owner_email
-    owner_name = var.owner_name
   }
 }
 
@@ -38,8 +29,6 @@ resource "aws_nat_gateway" "nat" {
 
   tags = {
     Name        = "Bootcamp NAT"
-    owner_email = var.owner_email
-    owner_name = var.owner_name
   }
 }
 
@@ -52,8 +41,6 @@ resource "aws_subnet" "bootcamp-public-subnet" {
 
   tags = {
     Name = "Bootcamp Public Subnet"
-    owner_email = var.owner_email
-    owner_name = var.owner_name
   }
 }
 
@@ -62,8 +49,6 @@ resource "aws_route_table" "public-route-table" {
 
   tags = {
     Name = "Bootcamp Public Route Table"
-    owner_email = var.owner_email
-    owner_name = var.owner_name
   }
 }
 
@@ -72,8 +57,6 @@ resource "aws_route_table" "private-route-table" {
 
   tags = {
     Name = "Bootcamp Private Route Table"
-    owner_email = var.owner_email
-    owner_name = var.owner_name
   }
 }
 
@@ -106,8 +89,6 @@ resource "aws_subnet" "bootcamp-private-subnet" {
 
   tags = {
     Name = "Bootcamp Private Subnet 1"
-    owner_email = var.owner_email
-    owner_name = var.owner_name
   }
 }
 
@@ -139,8 +120,6 @@ resource "aws_security_group" "all-bootcamp" {
 
   tags = {
     Name = "Partner Bootcamp Internal Access"
-    owner_email = var.owner_email
-    owner_name = var.owner_name
   }
 }
 
@@ -166,8 +145,6 @@ resource "aws_security_group" "external-access" {
 
   tags = {
     Name = "Partner Bootcamp External Access"
-    owner_email = var.owner_email
-    owner_name = var.owner_name
   }
 }
 
