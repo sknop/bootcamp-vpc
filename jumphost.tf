@@ -14,8 +14,6 @@ resource "aws_instance" "jumphost" {
   tags = {
     Name        = "Bootcamp Jumphost"
     description = "Jumphost for Bootcamp - Managed by Terraform"
-    Owner_Name  = var.owner_name
-    Owner_Email = var.owner_email
     sshUser     = "ubuntu"
     region      = var.region
   }
