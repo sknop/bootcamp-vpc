@@ -13,6 +13,11 @@ output "sambahost-ip" {
   value = aws_instance.sambahost.public_ip
 }
 
+output "sambahost-private-ip" {
+  description = "Show the private IP of the samba host"
+  value = aws_instance.sambahost.private_ip
+}
+
 output "vpc-id" {
   description = "The IP of the bootcamp VPC"
   value = aws_vpc.vpc.id
