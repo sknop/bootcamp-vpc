@@ -20,3 +20,11 @@ resource "aws_instance" "sambahost" {
     region      = var.region
   }
 }
+
+resource "aws_route53_record" "sambahost" {
+  zone_id = aws_route53_zone.private.id
+  name = "samba"
+  type = "A"
+  ttl = "300"
+  records = [aws_instance.sambahost.private_ip]
+}
