@@ -28,6 +28,16 @@ output "bootcamp-security-group" {
   value = aws_security_group.all-bootcamp.id
 }
 
+output "external-bootcamp-security-group" {
+  description = "Id of the security group for external access"
+  value = aws_security_group.external-access.id
+}
+
+output "public-subnet" {
+  description = "Public subnet for all external-facing instances"
+  value = aws_subnet.bootcamp-public-subnet.id
+}
+
 output "subnets-az1" {
   description = "Subnet AZ1 for creating Confluent Cluster"
   value = aws_subnet.bootcamp-private-subnet[0].id

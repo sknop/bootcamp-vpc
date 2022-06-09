@@ -138,7 +138,7 @@ resource "aws_security_group" "all-bootcamp" {
   }
 
   tags = {
-    Name = "Partner Bootcamp Internal Access"
+    Name = "Bootcamp Internal Access"
     owner_email = var.owner_email
     owner_name = var.owner_name
   }
@@ -165,7 +165,7 @@ resource "aws_security_group" "external-access" {
   }
 
   tags = {
-    Name = "Partner Bootcamp External Access"
+    Name = "Bootcamp External Access"
     owner_email = var.owner_email
     owner_name = var.owner_name
   }

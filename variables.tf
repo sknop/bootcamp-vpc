@@ -10,7 +10,7 @@ variable "vpc-cidr" {
 
 variable "availability-zones" {
   description = "The availability zones for this region"
-  type = list
+  type = list(string)
 }
 
 variable "public-availability-zone" {
@@ -26,11 +26,11 @@ variable "public-subnet-cidr" {
 
 variable "private-subnets-cidr" {
   description = "Private subnet CIDR"
-  type = list
+  type = list(string)
 }
 
 variable "bootcamp-key-name" {
-  default = "bootcamp-partner-key"
+  default = "bootcamp-key"
   description = "Name of key in AWS"
   type = string
 }
