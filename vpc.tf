@@ -9,7 +9,7 @@ resource "aws_vpc" "vpc" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "partner-bootcamp-vpc"
+    Name = "bootcamp-vpc"
     owner_email = var.owner_email
     owner_name = var.owner_name
   }
