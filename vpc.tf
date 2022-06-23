@@ -34,7 +34,7 @@ resource "aws_eip" "nat_eip" {
 # NAT
 resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat_eip.id
-  subnet_id     = aws_subnet.bootcamp-public-subnet.id
+  subnet_id     = aws_subnet.bootcamp-public-subnet[0].id
 
   tags = {
     Name        = "Bootcamp NAT"
@@ -46,12 +46,13 @@ resource "aws_nat_gateway" "nat" {
 
 resource "aws_subnet" "bootcamp-public-subnet" {
   vpc_id = aws_vpc.vpc.id
-  cidr_block = var.public-subnet-cidr
-  availability_zone = var.public-availability-zone
+  count = length(var.private-subnets-cidr)
+  cidr_block = element(var.public-subnet-cidr, count.index)
+  availability_zone = element(var.public-availability-zone, count.index)
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "Bootcamp Public Subnet"
+    Name = "Bootcamp Public Subnet ${count.index}"
     owner_email = var.owner_email
     owner_name = var.owner_name
   }
@@ -93,7 +94,8 @@ resource "aws_route" "private_nat_gateway" {
 
 
 resource "aws_route_table_association" "public-subnet-route-table-association" {
-  subnet_id = aws_subnet.bootcamp-public-subnet.id
+  count = length(aws_subnet.bootcamp-public-subnet)
+  subnet_id = element(aws_subnet.bootcamp-public-subnet.*.id, count.index)
   route_table_id = aws_route_table.public-route-table.id
 }
 

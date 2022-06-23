@@ -33,24 +33,14 @@ output "external-bootcamp-security-group" {
   value = aws_security_group.external-access.id
 }
 
-output "public-subnet" {
+output "public-subnets" {
   description = "Public subnet for all external-facing instances"
-  value = aws_subnet.bootcamp-public-subnet.id
+  value = [ aws_subnet.bootcamp-public-subnet.*.id ]
 }
 
-output "subnets-az1" {
+output "private-subnets" {
   description = "Subnet AZ1 for creating Confluent Cluster"
-  value = aws_subnet.bootcamp-private-subnet[0].id
-}
-
-output "subnets-az2" {
-  description = "Subnet AZ2 for creating Confluent Cluster"
-  value = aws_subnet.bootcamp-private-subnet[1].id
-}
-
-output "subnets-az3" {
-  description = "Subnet AZ3 for creating Confluent Cluster"
-  value = aws_subnet.bootcamp-private-subnet[2].id
+  value = [ aws_subnet.bootcamp-private-subnet.*.id ]
 }
 
 output "hosted-zone-id" {

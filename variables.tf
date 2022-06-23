@@ -15,13 +15,12 @@ variable "availability-zones" {
 
 variable "public-availability-zone" {
   description = "The availability zone for the public subnet"
-  type = string
+  type = list(string)
 }
 
 variable "public-subnet-cidr" {
-  default = "172.32.0.0/24"
   description = "Public subnet CIDR"
-  type = string
+  type = list(string)
 }
 
 variable "private-subnets-cidr" {
@@ -45,5 +44,9 @@ variable "owner_email" {
 }
 
 variable "owner_name" {
+  type = string
+}
+
+variable "root-zone" {
   type = string
 }
