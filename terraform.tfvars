@@ -10,4 +10,4 @@ bootcamp-key-name = "bootcamp-partner-key"
 owner_email = "sven@confluent.io"
 owner_name = "Sven Erik Knop"
 
-root-zone = "bootcamp-partners.confluent.io"
+root-zone = "bootcamp.confluent.io"
