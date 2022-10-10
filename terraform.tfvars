@@ -5,7 +5,7 @@ private-subnets-cidr = [ "172.32.1.0/24", "172.32.2.0/24", "172.32.3.0/24" ]
 availability-zones = [ "eu-west-1a", "eu-west-1b", "eu-west-1c" ]
 public-availability-zone = [ "eu-west-1a", "eu-west-1b", "eu-west-1c" ]
 
-bootcamp-key-name = "bootcamp-partner-key"
+bootcamp-key-name = "bootcamp-key"
 
 owner_email = "sven@confluent.io"
 owner_name = "Sven Erik Knop"
