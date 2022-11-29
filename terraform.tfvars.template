@@ -11,3 +11,5 @@ owner_email = "sven@confluent.io"
 owner_name = "Sven Erik Knop"
 
 root-zone = "bootcamp.confluent.io"
+samba-instance-type = "t3.large"
+jumphost-instance-type = "t3.micro"

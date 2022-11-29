@@ -39,6 +39,16 @@ variable "my-ip" {
   type = string
 }
 
+variable "samba-instance-type" {
+  description = "AWS instance type used for samba instance"
+  default = "t3.large"
+}
+
+variable "jumphost-instance-type" {
+  description = "AWS instance type used for jumphost instance"
+  default = "t3.micro"
+}
+
 variable "owner_email" {
   type = string
 }

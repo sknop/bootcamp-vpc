@@ -1,6 +1,6 @@
 resource "aws_instance" "jumphost" {
   ami               = data.aws_ami.ubuntu.id
-  instance_type     = "t3.micro"
+  instance_type     = var.jumphost-instance-type
   key_name          = aws_key_pair.bootcamp-key.key_name
 
   root_block_device {

@@ -1,6 +1,6 @@
 resource "aws_instance" "sambahost" {
   ami               = data.aws_ami.ubuntu.id
-  instance_type     = "t2.large"
+  instance_type     = var.samba-instance-type
   key_name          = aws_key_pair.bootcamp-key.key_name
 
   root_block_device {

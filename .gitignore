@@ -3,3 +3,4 @@
 .terraform
 bootcamp.pem
 /.terraform.lock.hcl
+terraform.tfvars
