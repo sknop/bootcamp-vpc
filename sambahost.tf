@@ -1,3 +1,17 @@
+resource "aws_kms_key" "vault" {
+  description   = "Vault unseal key"
+  deletion_window_in_days = 30
+
+  tags = {
+    Name = var.bootcamp-key-name
+  }
+}
+
+resource "aws_kms_alias" "vault" {
+  name    = "alias/vault-unseal-key"
+  target_key_id = aws_kms_key.vault.key_id
+}
+
 resource "aws_instance" "sambahost" {
   ami               = data.aws_ami.ubuntu.id
   instance_type     = var.samba-instance-type
@@ -10,6 +24,7 @@ resource "aws_instance" "sambahost" {
   subnet_id = aws_subnet.bootcamp-public-subnet[0].id
   vpc_security_group_ids = [aws_security_group.all-bootcamp.id, aws_security_group.external-access.id]
   associate_public_ip_address = true
+  iam_instance_profile = aws_iam_instance_profile.vault-kms-unseal.id
 
   tags = {
     Name        = "Bootcamp Sambahost"

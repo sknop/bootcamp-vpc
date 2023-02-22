@@ -47,3 +47,8 @@ output "hosted-zone-id" {
   description = "Route 53 internal hosted zone"
   value = aws_route53_zone.private.id
 }
+
+output "vault-unseal-key-id" {
+  description = "Vault unseal key id"
+  value = aws_kms_key.vault.key_id
+}
