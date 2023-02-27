@@ -1,0 +1,19 @@
+[servers]
+samba ansible_host=${samba_host}
+jumphost ansible_host=${jump_host}
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
+ansible_connection=ssh
+ansible_user=ubuntu
+ansible_become=true
+ansible_ssh_private_key_file=${private_key}
+
+# Set the desired domain here
+domain_name=${domain}
+region=${region}
+kms_key_id=${kms_key}
+
+# Do not touch these, automatically generated
+realm={{domain_name | upper}}
+ldap_base={{ ['DC='] | product(realm.split('.')) | map('join') | join(',') }}
