@@ -1,0 +1,8 @@
+---
+- name: Set domain to {{ domain_name }}
+  lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: "^#Domains="
+    line: "Domains={{ domain_name }}"
+  notify: "Restart systemd-resolved"
+  tags: domain

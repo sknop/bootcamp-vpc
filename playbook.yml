@@ -1,0 +1,37 @@
+---
+- name: will wait till reachable
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Wait for system to become reachable
+      wait_for_connection:
+    - name: Gather facts for the first time
+      setup:
+
+- hosts: all
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+    - domain
+
+- hosts: samba
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+    - vault
+
+- hosts: samba
+  environment:
+    VAULT_ADDR: "http://127.0.0.1:8200"
+  roles:
+    - vault-init
+    - vault-configure
+
+- hosts: samba
+  roles:
+    - samba
+    - samba-configure
+    - webservice
+

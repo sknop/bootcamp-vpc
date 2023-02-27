@@ -1,0 +1,4 @@
+dn: cn=Services,ou=Groups,ou=Kafka,{{ldap_base}}
+objectClass: group
+cn: Services
+gidNumber: 5002

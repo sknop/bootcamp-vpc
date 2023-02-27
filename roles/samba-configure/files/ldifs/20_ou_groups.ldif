@@ -1,0 +1,3 @@
+dn: ou=Groups,ou=Kafka,{{ldap_base}}
+objectClass: organizationalUnit
+ou: Groups

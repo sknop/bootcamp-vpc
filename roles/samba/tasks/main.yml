@@ -1,0 +1,225 @@
+---
+- name: Set hostname
+  hostname:
+    name: samba.{{domain_name}}
+
+
+- name: Show host's IP
+  debug:
+    # msg: "{{ hostvars['samba'] }}"
+    msg: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}"
+
+- name: Update /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    insertafter: '127.0.0.1 localhost'
+    line: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}\tsamba samba.{{domain_name}}"
+    state: present
+
+- name: Install packages
+  apt:
+    name:
+      - samba
+      - smbclient
+      - winbind
+      - libpam-winbind
+      - libnss-winbind
+      - krb5-kdc
+      - libpam-krb5
+      - ldap-utils
+      - openjdk-11-jdk
+      - python3-ldap3
+      - python3-flask
+      - python3-gunicorn
+      - gunicorn
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Check state of samba domain 'samba'
+  command: samba-tool domain info samba
+  ignore_errors: yes
+  register: samba_configured
+  changed_when: false
+
+- name: Remove old krb5.conf (if there)
+  file:
+    path: /etc/krb5.conf
+    state: absent
+  when: samba_configured.rc != 0
+
+- name: Remove old smb.conf (if there)
+  file:
+    path: /etc/samba/smb.conf
+    state: absent
+  when: samba_configured.rc != 0
+
+- name: Install the domain controller
+  command:
+    argv:
+      - samba-tool
+      - domain
+      - provision
+      - --use-rfc2307
+      - --realm
+      - '{{ realm }}'
+      - --domain
+      - BOOTCAMP
+      - --dns-backend
+      - SAMBA_INTERNAL
+      - --adminpass
+      - Bootcamp4Ever
+  when: samba_configured.rc != 0
+
+- name: Disable smbd
+  systemd:
+    name: smbd
+    masked: yes
+    enabled: no
+    state: stopped
+
+- name: Disable nmbd
+  systemd:
+    name: nmbd
+    masked: yes
+    enabled: no
+    state: stopped
+
+- name: Disable winbind
+  systemd:
+    name: winbind
+    masked: yes
+    enabled: no
+    state: stopped
+
+- name: Enable Samba AD DC
+  systemd:
+    name: samba-ad-dc
+    masked: no
+    enabled: yes
+    state: started
+
+- name: Copy kafka-int-ca.pem into /var/lib/samba/private/tls
+  copy:
+    src: /home/ubuntu/kafka-int-ca.pem
+    dest: /var/lib/samba/private/tls/ca.pem
+    remote_src: yes
+
+- name: Copy samba certificate into /var/lib/samba/private/tls
+  copy:
+    src: /home/ubuntu/samba.pem
+    dest: /var/lib/samba/private/tls/cert.pem
+    remote_src: yes
+
+- name: Copy key into /var/lib/samba/private/tls
+  copy:
+    src: /home/ubuntu/key.pem
+    dest: /var/lib/samba/private/tls/key.pem
+    mode: 0600
+    remote_src: yes
+
+- name: Configure Samba for TLS
+  blockinfile:
+    path: /etc/samba/smb.conf
+    insertafter: '.*idmap_ldb:use rfc2307 = yes'
+    block: |4
+          tls enabled  = yes
+          tls keyfile  = tls/key.pem
+          tls certfile = tls/cert.pem
+          tls cafile   = tls/ca.pem
+  register: samba_tls
+
+- name: Ensure correct entries in krb5.conf
+  blockinfile:
+    path: /var/lib/samba/private/krb5.conf
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - {{ item.section }} - krb5.conf"
+    insertafter: "{{ item.insertafter }}"
+    block: "{{ item.block }}"
+  loop: "{{ krb5_config }}"
+
+- name: Restart Samba service
+  systemd:
+    name: samba-ad-dc
+    state: restarted
+  when: samba_tls.changed
+
+- name: Copy krb5.conf
+  copy:
+    src: /var/lib/samba/private/krb5.conf
+    dest: /etc/krb5.conf
+    remote_src: yes
+
+- name: Copy root-ca.pem into /usr/local/share/ca-certificates
+  copy:
+    src: /home/ubuntu/root-ca.pem
+    dest: /usr/local/share/ca-certificates/ca.crt
+    remote_src: yes
+
+- name: Copy kafka-int-ca.pem into /usr/local/share/ca-certificates
+  copy:
+    src: /home/ubuntu/kafka-int-ca.pem
+    dest: /usr/local/share/ca-certificates/intermediate-ca.crt
+    remote_src: yes
+
+- name: Run update-ca-certificates
+  command: "update-ca-certificates"
+  register: update_ca
+  changed_when: "'0 added, 0 removed; done.' not in update_ca.stdout"
+
+- name: Get password settings from samba-tool
+  command: samba-tool domain passwordsettings show
+  register: password_settings
+  changed_when: false
+
+#  Returns a list of information like this
+# Password information for domain '{{ldap_base}}'
+#
+# Password complexity: off
+# Store plaintext passwords: off
+# Password history length: 0
+# Minimum password length: 7
+# Minimum password age (days): 0
+# Maximum password age (days): 0
+# Account lockout duration (mins): 30
+# Account lockout threshold (attempts): 0
+# Reset account lockout after (mins): 30
+
+- name: Get Password complexity
+  set_fact:
+    password_complexity: "{{ password_settings.stdout | regex_search(regexp, '\\1') | first}}"
+  vars:
+    regexp: 'Password complexity: (.*)'
+
+- name: Disable password complexity
+  command: samba-tool domain passwordsettings set --complexity=off
+  when: password_complexity == "on"
+
+- name: Get History Length
+  set_fact:
+    history_length: "{{ password_settings.stdout | regex_search(regexp, '\\1') | first}}"
+  vars:
+    regexp: 'Password history length: (.*)'
+
+- name: Disable password history
+  command: samba-tool domain passwordsettings set --history-length=0
+  when: history_length != "0"
+
+- name: Get Minimum Password Age
+  set_fact:
+    minimum_password_age: "{{ password_settings.stdout | regex_search(regexp, '\\1') | first}}"
+  vars:
+    regexp: 'Minimum password age \(days\): (.*)'
+
+- name: Disable minimum password age
+  command: samba-tool domain passwordsettings set --min-pwd-age=0
+  when: minimum_password_age != "0"
+
+- name: Get Maximum Password Age
+  set_fact:
+    maximum_password_age: "{{ password_settings.stdout | regex_search(regexp, '\\1') | first}}"
+  vars:
+    regexp: 'Maximum password age \(days\): (.*)'
+
+- name: Disable maximum password age
+  command: samba-tool domain passwordsettings set --max-pwd-age=0
+  when: maximum_password_age != "0"

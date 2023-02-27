@@ -1,0 +1,7 @@
+dn: CN=Eva Maria,OU=Users,OU=Kafka,{{ldap_base}}
+objectClass: user
+accountExpires: 0
+userPrincipalName: eva@{{realm}}
+sAMAccountName: eva
+userAccountControl: 66048
+unicodePwd:: IgBlAHYAYQAtAHMAZQBjAHIAZQB0ACIA

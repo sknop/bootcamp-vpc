@@ -1,0 +1,4 @@
+dn: CN=Developers,OU=Groups,OU=Kafka,{{ldap_base}}
+changetype: modify
+add: member
+member: CN=Alice LookingGlass,OU=Users,OU=Kafka,{{ldap_base}}

@@ -1,0 +1,7 @@
+dn: CN=Schema Registry,ou=Users,ou=Kafka,{{ldap_base}}
+objectClass: user
+accountExpires: 0
+userPrincipalName: schemaregistry@{{realm}}
+sAMAccountName: schemaregistry
+userAccountControl: 66048
+unicodePwd:: IgBzAGMAaABlAG0AYQAtAHMAZQBjAHIAZQB0ACIA

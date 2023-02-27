@@ -1,0 +1,3 @@
+dn: ou=Kafka,{{ldap_base}}
+objectClass: organizationalUnit
+ou: Kafka

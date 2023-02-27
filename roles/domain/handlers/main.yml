@@ -1,0 +1,15 @@
+---
+- name: Restart systemd-networkd
+  systemd:
+    name: systemd-networkd
+    state: restarted
+    daemon_reload: yes
+  listen: "restart systemd service"
+
+- name: Restart systemd-resolved
+  systemd:
+    name: systemd-resolved
+    state: restarted
+    daemon_reload: yes
+  listen: "restart systemd service"
+

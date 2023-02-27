@@ -1,0 +1,7 @@
+dn: CN=ksqlDB,ou=Users,ou=Kafka,{{ldap_base}}
+objectClass: user
+accountExpires: 0
+userPrincipalName: ksql@{{realm}}
+sAMAccountName: ksql
+userAccountControl: 66048
+unicodePwd:: IgBrAHMAcQBsAC0AcwBlAGMAcgBlAHQAIgA=

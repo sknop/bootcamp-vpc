@@ -1,0 +1,7 @@
+dn: CN=Charlie Sheen,OU=Users,OU=Kafka,{{ldap_base}}
+objectClass: user
+accountExpires: 0
+userPrincipalName: charlie@{{realm}}
+sAMAccountName: charlie
+userAccountControl: 66048
+unicodePwd:: IgBjAGgAYQByAGwAaQBlAC0AcwBlAGMAcgBlAHQAIgA=

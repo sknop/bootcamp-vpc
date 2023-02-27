@@ -1,0 +1,3 @@
+dn: ou=Users,ou=Kafka,{{ldap_base}}
+objectClass: organizationalUnit
+ou: Users

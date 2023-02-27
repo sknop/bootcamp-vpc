@@ -1,0 +1,152 @@
+- name: Check if kafka_truststore.jks exists
+  stat:
+    path: /home/ubuntu/kafka-truststore.jks
+  register: truststore
+  tags: configure
+
+- name: Enable root pki
+  shell: vault secrets enable -path root-ca pki
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Tune root lease
+  shell: vault secrets tune -max-lease-ttl=87600h root-ca
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Create root CA
+  shell: vault write -field certificate root-ca/root/generate/internal common_name="Confluent Bootcamp Root CA" ttl=8760h > root-ca.pem
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Write issuing CA certificate
+  shell: vault write root-ca/config/urls issuing_certificates="$VAULT_ADDR/v1/root-ca/ca" crl_distribution_points="$VAULT_ADDR/v1/root-ca/crl"
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Enable intermediate pki
+  shell: vault secrets enable -path kafka-int-ca pki
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Tune intermediate lease
+  shell: vault secrets tune -max-lease-ttl=8760h kafka-int-ca
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Create intermediate CSR
+  shell: vault write -field=csr kafka-int-ca/intermediate/generate/internal common_name="Confluent Bootcamp Kafka Intermediate CA" ttl=43800h > kafka-int-ca.csr
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Create intermediate CA
+  shell: vault write -field=certificate root-ca/root/sign-intermediate csr=@kafka-int-ca.csr format=pem_bundle ttl=43800h > kafka-int-ca.pem
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Sign intermediate CA
+  shell: vault write kafka-int-ca/intermediate/set-signed certificate=@kafka-int-ca.pem
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Write issuing intermediate CA
+  shell: vault write kafka-int-ca/config/urls issuing_certificates="$VAULT_ADDR/v1/kafka-int-ca/ca" crl_distribution_points="$VAULT_ADDR/v1/kafka-int-ca/crl"
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Create kafka-client role
+  shell: vault write kafka-int-ca/roles/kafka-client  enforce_hostnames=false allow_any_name=true  max_ttl=5040h
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Create kafka-server role
+  shell: vault write kafka-int-ca/roles/kafka-server  enforce_hostnames=false allow_client=true allow_any_name=true allow_bare_domains=true allow_subdomains=true max_ttl=5040h
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Create samba-server role
+  shell: vault write kafka-int-ca/roles/samba-server  enforce_hostnames=false allow_client=true allow_any_name=true allow_bare_domains=true allow_subdomains=true max_ttl=43800h
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Create client policy file
+  template:
+    src: kafka-client.j2
+    dest: /home/ubuntu/kafka-client.hcl
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Apply client policy
+  shell: vault policy write kafka-client kafka-client.hcl
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Permit client token
+  shell: vault write auth/token/roles/kafka-client allowed_policies=kafka-client period=24h
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Create server policy file
+  template:
+    src: kafka-server.j2
+    dest: /home/ubuntu/kafka-server.hcl
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Apply server policy
+  shell: vault policy write kafka-server kafka-server.hcl
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Permit server token
+  shell: vault write auth/token/roles/kafka-server allowed_policies=kafka-server period=24h
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Create samba server policy file
+  template:
+    src: samba-server.j2
+    dest: /home/ubuntu/samba-server.hcl
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Apply samba server policy
+  shell: vault policy write samba-server samba-server.hcl
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Permit server token
+  shell: vault write auth/token/roles/samba-server allowed_policies=samba-server period=24h
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Create the trust store
+  shell: keytool -import -alias root-ca -trustcacerts -file root-ca.pem -keystore kafka-truststore.jks --storepass changeme -noprompt
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Import intermediate CA into trust store
+  shell: keytool -import -alias kafka-int-ca -trustcacerts -file kafka-int-ca.pem -keystore kafka-truststore.jks --storepass changeme -noprompt
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Clean up intermediate files
+  shell: /bin/rm /home/ubuntu/*.hcl /home/ubuntu/*.csr
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Add VAULT_ADDR to .bashrc
+  lineinfile:
+    path: /home/ubuntu/.bashrc
+    line: 'export VAULT_ADDR=http://127.0.0.1:8200'
+
+- name: Create samba token
+  shell: vault token create -role samba-server -format table | grep token | grep -v token_ | awk '{ print $2 }'
+  register: samba_token
+
+- name: Create Samba certificate
+  shell: VAULT_TOKEN="{{ samba_token.stdout }}" vault write -field certificate kafka-int-ca/issue/samba-server common_name=samba.{{domain_name}} ttl=8760h format=pem_bundle > samba.pem
+
+- name: Extract samba key from cert
+  shell: openssl pkey -in samba.pem -out key.pem
+

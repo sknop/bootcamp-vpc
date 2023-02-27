@@ -1,0 +1,7 @@
+dn: CN=Kafka Superuser,OU=Users,OU=Kafka,{{ldap_base}}
+objectClass: user
+accountExpires: 0
+userPrincipalName: kafka@{{realm}}
+sAMAccountName: kafka
+userAccountControl: 66048
+unicodePwd:: IgBrAGEAZgBrAGEALQBzAGUAYwByAGUAdAAiAA==

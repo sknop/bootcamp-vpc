@@ -1,0 +1,3 @@
+dn: ou=Services,ou=Kafka,{{ldap_base}}
+objectClass: organizationalUnit
+ou: Services

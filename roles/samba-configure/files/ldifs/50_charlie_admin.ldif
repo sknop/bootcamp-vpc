@@ -1,0 +1,5 @@
+dn: CN=Admins,OU=Groups,OU=Kafka,{{ldap_base}}
+changetype: modify
+add: member
+member: CN=Charlie Sheen,OU=Users,OU=Kafka,{{ldap_base}}
+

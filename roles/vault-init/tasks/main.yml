@@ -1,0 +1,45 @@
+- name: Check status of vault
+  shell: vault status -format=yaml
+  environment:
+    VAULT_ADDR: "http://127.0.0.1:8200"
+  register: vault_status_raw
+  failed_when:
+    - vault_status_raw.rc == 1
+  changed_when: false
+
+- name: save vault_status
+  set_fact:
+    vault_status: "{{ vault_status_raw.stdout | from_yaml }}"
+
+- name: Initialise Vault operator
+  shell: vault operator init -format json
+  environment:
+    VAULT_ADDR: "http://127.0.0.1:8200"
+  register: vault_init_results
+  when: not vault_status.initialized | bool
+
+- name: Parse output of vault init
+  set_fact:
+    vault_init_parsed: "{{ vault_init_results.stdout | from_json }}"
+  when: not vault_status.initialized | bool
+
+- name: Set vault_token fact
+  set_fact:
+    vault_token: "{{ vault_init_parsed.root_token }}"
+  when: not vault_status.initialized | bool
+
+- name: Write root token to file
+  copy:
+    content: "{{ vault_token }}"
+    dest: "/home/ubuntu/.vault-token"
+    mode: '0600'
+    owner: ubuntu
+    group: ubuntu
+  when: not vault_status.initialized | bool
+
+- name: Copy root token to /root
+  copy:
+    src: /home/ubuntu/.vault-token
+    dest: /root/.vault-token
+    remote_src: True
+  when: not vault_status.initialized | bool

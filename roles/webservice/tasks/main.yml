@@ -1,0 +1,31 @@
+- name: Slurp token content
+  slurp:
+    src: "/home/ubuntu/.vault-token"
+  register: vault_token_content
+
+- name: Get root vault token
+  set_fact:
+    root_vault_token: "{{ vault_token_content.content | b64decode }}"
+
+- name: Create service override directory
+  file:
+    path: /etc/systemd/system/bootcamp-webservice.service.d
+    state: directory
+    recurse: yes
+
+- name: Create service file
+  template:
+    src: bootcamp-webservice.service.j2
+    dest: /etc/systemd/system/bootcamp-webservice.service
+
+- name: Create override file
+  template:
+    src: override.conf.j2
+    dest: /etc/systemd/system/bootcamp-webservice.service.d/override.conf
+
+- name: Enable bootcamp-webservice
+  systemd:
+    name: bootcamp-webservice
+    masked: no
+    enabled: yes
+    state: started

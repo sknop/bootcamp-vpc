@@ -1,0 +1,7 @@
+dn: CN=mds,OU=Users,OU=Kafka,{{ldap_base}}
+objectClass: user
+accountExpires: 0
+userPrincipalName: mds@{{realm}}
+sAMAccountName: mds
+userAccountControl: 66048
+unicodePwd:: IgBtAGQAcwAtAHMAZQBjAHIAZQB0ACIA

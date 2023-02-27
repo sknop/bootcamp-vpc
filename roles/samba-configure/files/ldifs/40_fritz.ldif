@@ -1,0 +1,7 @@
+dn: CN=Fritz Walter,OU=Users,OU=Kafka,{{ldap_base}}
+objectClass: user
+accountExpires: 0
+userPrincipalName: fritz@{{realm}}
+sAMAccountName: fritz
+userAccountControl: 66048
+unicodePwd:: IgBmAHIAaQB0AHoALQBzAGUAYwByAGUAdAAiAA==

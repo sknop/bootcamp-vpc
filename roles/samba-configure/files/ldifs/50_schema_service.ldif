@@ -1,0 +1,4 @@
+dn: cn=Services,ou=Groups,ou=Kafka,{{ldap_base}}
+changetype: modify
+add: member
+member: CN=Schema Registry,ou=Users,ou=Kafka,{{ldap_base}}

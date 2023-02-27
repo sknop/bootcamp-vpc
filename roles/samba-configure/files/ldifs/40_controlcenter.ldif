@@ -1,0 +1,7 @@
+dn: CN=Control Center,ou=Users,ou=Kafka,{{ldap_base}}
+objectClass: user
+accountExpires: 0
+userPrincipalName: controlcenter@{{realm}}
+sAMAccountName: controlcenter
+userAccountControl: 66048
+unicodePwd:: IgBjADMALQBzAGUAYwByAGUAdAAiAA==

@@ -1,0 +1,7 @@
+dn: CN=Donald Duck,OU=Users,OU=Kafka,{{ldap_base}}
+objectClass: user
+accountExpires: 0
+userPrincipalName: donald@{{realm}}
+sAMAccountName: donald
+userAccountControl: 66048
+unicodePwd:: IgBkAG8AbgBhAGwAZAAtAHMAZQBjAHIAZQB0ACIA

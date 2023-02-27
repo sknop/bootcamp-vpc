@@ -1,0 +1,7 @@
+dn: CN=Rest Proxy,ou=Users,ou=Kafka,{{ldap_base}}
+objectClass: user
+accountExpires: 0
+userPrincipalName: rest@{{realm}}
+sAMAccountName: rest
+userAccountControl: 66048
+unicodePwd:: IgByAGUAcwB0AC0AcwBlAGMAcgBlAHQAIgA=

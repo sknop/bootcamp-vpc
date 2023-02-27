@@ -1,0 +1,5 @@
+dn: cn=Services,ou=Groups,ou=Kafka,{{ldap_base}}
+changetype: modify
+add: member
+member: CN=Control Center,ou=Users,ou=Kafka,{{ldap_base}}
+

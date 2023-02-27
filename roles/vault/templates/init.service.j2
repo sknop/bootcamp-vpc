@@ -1,0 +1,21 @@
+[Unit]
+Description="HashiCorp Vault - A tool for managing secrets"
+Documentation=https://vaultproject.io/docs/
+Requires=network-online.target
+After=network-online.target
+After=network-online.target
+
+[Service]
+Restart=on-failure
+User=vault
+Group=vault
+ExecStart=/usr/bin/vault server -config=/etc/vault.d
+ExecReload=/usr/bin/kill --signal HUP $MAINPID
+CapabilityBoundingSet=CAP_SYSLOG CAP_IPC_LOCK
+AmbientCapabilities=CAP_IPC_LOCK
+SecureBits=keep-caps
+NoNewPrivileges=yes
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

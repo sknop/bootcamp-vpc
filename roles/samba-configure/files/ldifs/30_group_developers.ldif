@@ -1,0 +1,4 @@
+dn: cn=Developers,ou=Groups,ou=Kafka,{{ldap_base}}
+objectClass: group
+cn: Developers
+gidNumber: 5000
