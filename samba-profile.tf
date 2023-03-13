@@ -25,17 +25,17 @@ data "aws_iam_policy_document" "vault-kms-unseal" {
 }
 
 resource "aws_iam_role" "vault-kms-unseal" {
-  name               = "vault-kms-role-bootcamp"
+  name               = "vault-kms-role-bootcamp.${var.root-zone}"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
 resource "aws_iam_role_policy" "vault-kms-unseal" {
-  name   = "Vault-KMS-Unseal-bootcamp"
+  name   = "Vault-KMS-Unseal-bootcamp.${var.root-zone}"
   role   = aws_iam_role.vault-kms-unseal.id
   policy = data.aws_iam_policy_document.vault-kms-unseal.json
 }
 
 resource "aws_iam_instance_profile" "vault-kms-unseal" {
-  name = "vault-kms-unseal-bootcamp"
+  name = "vault-kms-unseal-bootcamp.${var.root-zone}"
   role = aws_iam_role.vault-kms-unseal.name
 }
