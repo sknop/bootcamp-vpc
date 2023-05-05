@@ -23,24 +23,29 @@ output "vpc-id" {
   value = aws_vpc.vpc.id
 }
 
-output "bootcamp-security-group" {
+output "internal-vpc-security-group-id" {
   description = "Id of the security group for internal access"
   value = aws_security_group.all-bootcamp.id
 }
 
-output "external-bootcamp-security-group" {
+output "external-vpc-security-group-id" {
   description = "Id of the security group for external access"
   value = aws_security_group.external-access.id
 }
 
-output "public-subnets" {
+output "public-subnet-ids" {
   description = "Public subnet for all external-facing instances"
-  value = [ aws_subnet.bootcamp-public-subnet.*.id ]
+  value = aws_subnet.bootcamp-public-subnet.*.id
 }
 
-output "private-subnets" {
+output "private-subnets-ids" {
   description = "Subnet AZ1 for creating Confluent Cluster"
-  value = [ aws_subnet.bootcamp-private-subnet.*.id ]
+  value = aws_subnet.bootcamp-private-subnet.*.id
+}
+
+output "availability-zones" {
+  description = "Availability zones corresponing to the subnet idsd"
+  value = aws_subnet.bootcamp-private-subnet.*.availability_zone
 }
 
 output "hosted-zone-id" {
