@@ -38,7 +38,7 @@ output "public-subnet-ids" {
   value = aws_subnet.bootcamp-public-subnet.*.id
 }
 
-output "private-subnets-ids" {
+output "private-subnet-ids" {
   description = "Subnet AZ1 for creating Confluent Cluster"
   value = aws_subnet.bootcamp-private-subnet.*.id
 }
