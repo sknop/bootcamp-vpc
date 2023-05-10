@@ -20,8 +20,21 @@ KERBEROS_DIRECTORY = "kerberos"
 SSL_DIRECTORY = "ssl"
 
 
+def check_principal_name(principal):
+    if principal == 'controller':
+        return 'kafka'
+    return principal
+
+
 class Generator:
     def __init__(self, base_dir, config_file, host_entries, owner_name):
+        self.username = None # for pylint
+        self.ldaps_url = None # for pylint
+        self.password = None # for pylint
+        self.truststore_file = None # for pylint
+        self.service_base_dn = None # for pylint
+        self.service_password = None # for pylint
+        self.realm = None # for pylint
         self.logger = logging.getLogger('bootcamp')
         self.base_dir = base_dir
         self.config_file = config_file
@@ -112,7 +125,7 @@ class Generator:
                     self.create_keytab(service_name, filename)
                     files.append(filename)
 
-                    filename = self.create_certificate(self.directories[1], principal, host)
+                    filename = self.create_certificate(self.directories[1], check_principal_name(principal), host)
                     files.append(filename)
         else:
             for principal, host_list in self.hosts.items():
@@ -123,13 +136,14 @@ class Generator:
                     alternate = [','.join(h) for h in zip(*host_list[1:])]
                     for host_pair in zip(dns, alternate):
                         print(f"{principal} --> {host_pair}")
-                        (service_name, filename) = self.create_service_user(self.directories[0], principal,
-                                                                            host_pair[0])
+                        (service_name, filename) = \
+                            self.create_service_user(self.directories[0], principal, host_pair[0])
 
                         self.create_keytab(service_name, filename)
                         files.append(filename)
 
-                        filename = self.create_certificate(self.directories[1], principal, host_pair[0], host_pair[1])
+                        filename = self.create_certificate(self.directories[1], check_principal_name(principal),
+                                                           host_pair[0], host_pair[1])
                         files.append(filename)
 
         filename = self.copy_truststore(self.directories[1], self.truststore_file)
@@ -148,10 +162,11 @@ class Generator:
         return 1
 
     def create_service_user(self, basedir, principal, host):
+        checked_principal_name = check_principal_name(principal)
         short_host = host.split('.')[0]
         cn = f"{principal} {short_host}"
         dn = f"CN={cn},{self.service_base_dn}"
-        service_name = f"{principal}/{host}"
+        service_name = f"{checked_principal_name}/{host}"
         user_principal_name = f"{service_name}@{self.realm}"
 
         user_attrs = {
@@ -179,10 +194,10 @@ class Generator:
 
         user_attrs = {
             "userAccountControl": [('MODIFY_REPLACE', 66048)],
-            'msDS-SupportedEncryptionTypes':  [('MODIFY_REPLACE', '31')],  # enable encryption types explicitly
-            'userPrincipalName':  [('MODIFY_REPLACE', user_principal_name)],
-            'sAMAccountName':  [('MODIFY_REPLACE', cn)],
-            'servicePrincipalName':  [('MODIFY_REPLACE', service_name)]
+            'msDS-SupportedEncryptionTypes': [('MODIFY_REPLACE', '31')],  # enable encryption types explicitly
+            'userPrincipalName': [('MODIFY_REPLACE', user_principal_name)],
+            'sAMAccountName': [('MODIFY_REPLACE', cn)],
+            'servicePrincipalName': [('MODIFY_REPLACE', service_name)]
         }
         self.ldap.modify(dn, user_attrs)
 
