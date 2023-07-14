@@ -15,7 +15,7 @@
   when: truststore.stat.exists == False
 
 - name: Create root CA
-  shell: vault write -field certificate root-ca/root/generate/internal common_name="Confluent Bootcamp Root CA" ttl=8760h > root-ca.pem
+  shell: vault write -field certificate root-ca/root/generate/internal common_name="Confluent Bootcamp Root CA" ttl=43800h > root-ca.pem
   tags: configure
   when: truststore.stat.exists == False
 
