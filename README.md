@@ -7,7 +7,7 @@ Will create
 
 - Internet Gateway
 
-- 1 public subnet
+- 3 public subnet
 
 - 3 private subnets
 
