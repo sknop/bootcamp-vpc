@@ -12,6 +12,11 @@ resource "aws_vpc" "vpc" {
     Name = "bootcamp-vpc"
     owner_email = var.owner_email
     owner_name = var.owner_name
+    cflt_environment = var.cflt_environment
+    cflt_partition = var.cflt_partition
+    cflt_managed_by	= var.cflt_managed_id
+    cflt_managed_id	= var.cflt_managed_id
+    cflt_service = var.cflt_service
   }
 }
 
