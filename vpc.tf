@@ -166,7 +166,7 @@ resource "aws_security_group" "external-access" {
     from_port = 0
     to_port = 0
     protocol = "-1"
-    cidr_blocks = [var.my-ip]
+    cidr_blocks = [local.my_ip]
   }
 
   egress {

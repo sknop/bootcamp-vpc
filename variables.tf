@@ -37,6 +37,7 @@ variable "bootcamp-key-name" {
 variable "my-ip" {
   description = "IP Address from which to get access to the public subnet in CIDR format (usually /32)"
   type = string
+  default = ""
 }
 
 variable "samba-instance-type" {
