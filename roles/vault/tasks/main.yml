@@ -59,8 +59,8 @@
     state: started
     enabled: yes
 
-- name: Install Java 11 (for keytool)
+- name: Install Java 17 (for keytool)
   apt:
-    name: openjdk-11-jdk
+    name: openjdk-17-jdk
     state: present
 
