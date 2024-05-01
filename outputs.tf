@@ -44,7 +44,7 @@ output "private-subnet-ids" {
 }
 
 output "availability-zones" {
-  description = "Availability zones corresponing to the subnet idsd"
+  description = "Availability zones corresponding to the subnet ids"
   value = aws_subnet.bootcamp-private-subnet.*.availability_zone
 }
 
