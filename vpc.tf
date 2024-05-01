@@ -55,7 +55,7 @@ resource "aws_nat_gateway" "nat" {
 
 resource "aws_subnet" "bootcamp-public-subnet" {
   vpc_id = aws_vpc.vpc.id
-  count = length(var.private-subnets-cidr)
+  count = length(var.public-subnet-cidr)
   cidr_block = element(var.public-subnet-cidr, count.index)
   availability_zone = element(var.public-availability-zone, count.index)
   map_public_ip_on_launch = true
