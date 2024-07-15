@@ -27,7 +27,7 @@
       - krb5-kdc
       - libpam-krb5
       - ldap-utils
-      - openjdk-11-jdk
+      - openjdk-21-jdk
       - python3-ldap3
       - python3-flask
       - python3-gunicorn
