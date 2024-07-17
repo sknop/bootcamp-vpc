@@ -67,3 +67,24 @@
     role_attr_flags: NOSUPERUSER,NOCREATEDB
     state: present
 
+- name: GRANT ALL PRIVILEGES ON DATABASE keycloak TO keycloak
+  become: true
+  become_user: postgres
+  community:
+    postgresql:
+      postgresql_privs:
+        db: keycloak
+        privs: ALL
+        type: database
+        user: keycloak
+
+- name: ALTER DATABASE keycloak OWNER TO keycloak
+  become: true
+  become_user: postgres
+  community:
+    postgresql:
+      postgresql_owner:
+        db: keycloak
+        new_owner: keycloak
+        obj_type: database
+
