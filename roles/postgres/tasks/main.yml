@@ -70,9 +70,7 @@
 - name: GRANT ALL PRIVILEGES ON DATABASE keycloak TO keycloak
   become: true
   become_user: postgres
-  community:
-    postgresql:
-      postgresql_privs:
+  community.postgresql.postgresql_privs:
         db: keycloak
         privs: ALL
         type: database
@@ -81,10 +79,7 @@
 - name: ALTER DATABASE keycloak OWNER TO keycloak
   become: true
   become_user: postgres
-  community:
-    postgresql:
-      postgresql_owner:
+  community.postgresql.postgresql_owner:
         db: keycloak
         new_owner: keycloak
         obj_type: database
-
