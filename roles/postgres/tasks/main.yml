@@ -75,6 +75,7 @@
         privs: ALL
         type: database
         user: keycloak
+        role: CURRENT_USER
 
 - name: ALTER DATABASE keycloak OWNER TO keycloak
   become: true
