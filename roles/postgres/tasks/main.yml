@@ -6,6 +6,7 @@
     update_cache: yes
   loop:
     - postgresql
+    - acl # required to solve https://docs.ansible.com/ansible-core/2.14/playbook_guide/playbooks_privilege_escalation.html#resolving-temporary-file-error-messsages
 
 - name: Start and enable PostgreSQL service
   service:
