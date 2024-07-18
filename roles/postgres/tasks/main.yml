@@ -61,6 +61,17 @@
     grant_option: no
     privs: ALL
 
+- name: GRANT 'keycloak' user access to schema 'public'
+  become: yes
+  become_user: postgres
+  postgresql_privs:
+    type: schema
+    database: "keycloak"
+    schema: public
+    roles: "keycloak"
+    grant_option: no
+    privs: ALL
+
 - name: ALTER DATABASE keycloak OWNER TO keycloak
   become: true
   become_user: postgres
