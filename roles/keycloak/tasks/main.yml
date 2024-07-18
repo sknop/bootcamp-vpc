@@ -21,13 +21,24 @@
 
 - name: Unzip keycloak archive
   ansible.builtin.unarchive:
-    remote_src: /tmp/keycloak.zip
+    src: /tmp/keycloak.zip
     dest: /opt
+    remote_src: yes
 
 - name: Rename keycloak directory to canonized version
   command:
     cmd: "mv /opt/keycloak-{{ keycloak_release }} /opt/keycloak"
     creates: /opt/keycloak
 
+- name: Copy certificate into keycloak directory
+  copy:
+    src: /home/ubuntu/samba.pem
+    dest: /opt/keycloak/conf/server.crt.pem
+    remote_src: yes
 
+- name: Copy key into keycloak directory
+  copy:
+    src: /home/ubuntu/key.pem
+    dest: /opt/keycloak/conf/server.key.pem
+    remote_src: yes
 
