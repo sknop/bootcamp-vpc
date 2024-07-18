@@ -37,11 +37,11 @@
   notify:
     - Restart PostgreSQL
 
-- name: Create new database with name "keycloak"
+- name: Create new database with name 'keycloak'
   become: yes
   become_user: postgres
   postgresql_db:
-    name: keycloak
+    name: "{{ keycloak_database }}"
     state: present
 
 - name: Create 'keycloak' user
