@@ -65,12 +65,11 @@
   become: yes
   become_user: postgres
   postgresql_privs:
-    type: schema
     database: "keycloak"
-    schema: public
-    roles: "keycloak"
-    grant_option: no
     privs: ALL
+    type: schema
+    objs: public
+    roles: "keycloak"
 
 - name: ALTER DATABASE keycloak OWNER TO keycloak
   become: true
