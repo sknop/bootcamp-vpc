@@ -1,4 +1,12 @@
 ---
+- name: Install unzip package
+  package:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  loop:
+    - unzip
+
 - name: Creating keycloak user group
   group:
     name: "{{ keycloak_group }}"
