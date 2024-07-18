@@ -38,48 +38,33 @@
     - Restart PostgreSQL
 
 - name: Create new database with name "keycloak"
-  become: true
-  become_method: su
-  become_exe: sudo su -
+  become: yes
   become_user: postgres
   postgresql_db:
     name: keycloak
     state: present
 
 - name: Create 'keycloak' user
-  become: true
-  become_method: su
-  become_exe: sudo su -
+  become: yes
   become_user: postgres
   postgresql_user:
-    db: keycloak
     name: "keycloak"
     password: "keycloakpass"
-    priv: ALL
 
-- name: Remove unnecessary permissions from 'keycloak'
-  become: true
-  become_method: su
-  become_exe: sudo su -
+- name: GRANT 'keycloak' user access to db 'keycloak'
+  become: yes
   become_user: postgres
-  postgresql_user:
-    name: "keycloak"
-    role_attr_flags: NOSUPERUSER,NOCREATEDB
-    state: present
-
-- name: GRANT ALL PRIVILEGES ON DATABASE keycloak TO keycloak
-  become: true
-  become_user: postgres
-  community.postgresql.postgresql_privs:
-        db: keycloak
-        privs: ALL
-        type: database
-        role: keycloak
+  postgresql_privs:
+    type: database
+    database: "keycloak"
+    roles: "keycloak"
+    grant_option: no
+    privs: ALL
 
 - name: ALTER DATABASE keycloak OWNER TO keycloak
   become: true
   become_user: postgres
-  community.postgresql.postgresql_owner:
-        db: keycloak
-        new_owner: keycloak
-        obj_type: database
+  postgresql_owner:
+    db: keycloak
+    new_owner: keycloak
+    obj_type: database
