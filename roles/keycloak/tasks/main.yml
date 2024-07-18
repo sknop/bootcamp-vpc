@@ -1,0 +1,33 @@
+---
+- name: Creating keycloak user group
+  group:
+    name: "{{ keycloak_group }}"
+  become: true
+
+- name: Creating vault user
+  user:
+    name: "{{ keycloak_user }}"
+    group: "{{ keycloak_group }}"
+    system: yes
+    shell: "/sbin/nologin"
+    comment: "keycloak nologin user"
+    createhome: "no"
+    state: present
+
+- name: Download keycloak zip file
+  ansible.builtin.get_url:
+    url: "https://github.com/keycloak/keycloak/releases/download/{{ keycloak_release }}/keycloak-{{ keycloak_release }}.zip"
+    dest: /tmp/keycloak.zip
+
+- name: Unzip keycloak archive
+  ansible.builtin.unarchive:
+    remote_src: /tmp/keycloak.zip
+    dest: /opt
+
+- name: Rename keycloak directory to canonized version
+  command:
+    cmd: "mv /opt/keycloak-{{ keycloak_release }} /opt/keycloak"
+    creates: /opt/keycloak
+
+
+

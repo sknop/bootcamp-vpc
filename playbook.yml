@@ -38,3 +38,5 @@
 - hosts: samba
   roles:
     - postgres
+    - keycloak
+

@@ -30,8 +30,8 @@
 - name: Enable access for keycloak user
   lineinfile:
     path: /etc/postgresql/16/main/pg_hba.conf
-    regexp: "hostssl keycloak	keycloak	127.0.0.1/32		scram-sha-256"
-    line: "hostssl keycloak	keycloak	127.0.0.1/32		scram-sha-256"
+    regexp: "hostssl { keycloak_database }}	{{ keycloak_user }}	127.0.0.1/32		scram-sha-256"
+    line:   "hostssl { keycloak_database }}	{{ keycloak_user }}	127.0.0.1/32		scram-sha-256"
     insertafter: EOF
     state: present
   notify:
@@ -48,16 +48,16 @@
   become: yes
   become_user: postgres
   postgresql_user:
-    name: "keycloak"
-    password: "keycloakpass"
+    name: "{{ keycloak_user }}"
+    password: "{{ keycloak_password }}"
 
 - name: GRANT 'keycloak' user access to db 'keycloak'
   become: yes
   become_user: postgres
   postgresql_privs:
     type: database
-    database: "keycloak"
-    roles: "keycloak"
+    database: "{{ keycloak_database }}"
+    roles: "{{ keycloak_user }}"
     grant_option: no
     privs: ALL
 
@@ -65,11 +65,11 @@
   become: yes
   become_user: postgres
   postgresql_privs:
-    database: "keycloak"
+    database: "{{ keycloak_database }}"
     privs: ALL
     type: schema
     objs: public
-    roles: "keycloak"
+    roles: "{{ keycloak_user }}"
 
 - name: ALTER DATABASE keycloak OWNER TO keycloak
   become: true

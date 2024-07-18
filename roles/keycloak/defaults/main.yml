@@ -1,0 +1,4 @@
+---
+keycloak_user: keycloak
+keycloak_group: keycloak
+keycloak_release: 25.0.2
