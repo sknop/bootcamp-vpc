@@ -2,3 +2,5 @@
 keycloak_user: keycloak
 keycloak_group: keycloak
 keycloak_release: 25.0.2
+keycloak_admin_user: keycloak
+keycloak_admin_password: keycloakpass

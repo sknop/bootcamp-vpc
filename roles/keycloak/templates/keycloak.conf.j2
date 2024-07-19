@@ -6,10 +6,10 @@
 db=postgres
 
 # The username of the database user.
-db-username={{ keycloak_user }}
+db-username={{ keycloak_admin_user }}
 
 # The password of the database user.
-db-password={{ keycloak_password }}
+db-password={{ keycloak_admin_password }}
 
 # The full database JDBC URL. If not provided, a default URL is set based on the selected database vendor.
 db-url=jdbc:postgresql://localhost/{{ keycloak_database }}

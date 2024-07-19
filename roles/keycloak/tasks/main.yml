@@ -95,8 +95,8 @@
     mode: '0755'
 
 - name: Setup keycloak override.conf
-  copy:
-    stc: override.conf
+  template:
+    src: override.conf
     dest: /etc/systemd/system/keycloak.service.d/override.conf
 
 - name: Start and enable keycloak service
