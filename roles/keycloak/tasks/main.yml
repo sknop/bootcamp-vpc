@@ -23,12 +23,12 @@
     state: present
 
 - name: Download keycloak zip file
-  ansible.builtin.get_url:
+  get_url:
     url: "https://github.com/keycloak/keycloak/releases/download/{{ keycloak_release }}/keycloak-{{ keycloak_release }}.zip"
     dest: /tmp/keycloak.zip
 
 - name: Unzip keycloak archive
-  ansible.builtin.unarchive:
+  unarchive:
     src: /tmp/keycloak.zip
     dest: /opt
     remote_src: yes
@@ -38,15 +38,71 @@
     cmd: "mv /opt/keycloak-{{ keycloak_release }} /opt/keycloak"
     creates: /opt/keycloak
 
+- name: Change ownership of "keycloak" directory
+  command:
+    cmd: "chown -c -R {{ keycloak_user }}:{{ keycloak_group }} /opt/keycloak"
+    register: chown_status
+    changed_when: chown_status.stdout != ""
+
 - name: Copy certificate into keycloak directory
   copy:
     src: /home/ubuntu/samba.pem
     dest: /opt/keycloak/conf/server.crt.pem
     remote_src: yes
+    owner: keycloak
+    group: keycloak
 
 - name: Copy key into keycloak directory
   copy:
     src: /home/ubuntu/key.pem
     dest: /opt/keycloak/conf/server.key.pem
     remote_src: yes
+    owner: keycloak
+    group: keycloak
+
+- name: Copy "keycloak.conf" into /opt/keycloak/conf
+  template:
+    src: keycloak.conf.j2
+    dest: /opt/keycloak/conf
+    owner: keycloak
+    group: keycloak
+
+- name: Build the keycloak configuration
+  command:
+    cmd: /opt/keycloak/bin/kc.sh build
+    register: build_status
+    changed_when: "Server configuration updated and persisted." in build_status
+  become_user: keycloak
+
+- name: Retrieve keycloak configuration
+  command:
+    cmd: /opt/keycloak/bin/kc.sh show-config
+    register: keycloak_config
+
+- name: Debug output of keycloak configuration
+  debug:
+    msg: "{{ keycloak_config.stdout }}"
+
+- name: Setup keycloak systemctl configuration
+  copy:
+    src: keycloak.service
+    dest: /etc/systemd/system/keycloak.service
+
+- name: Create systemctl configuration directory
+  file:
+    path: /etc/systemd/system/keycloak.service.d
+    state: directory
+    mode: '0755'
+
+- name: Setup keycloak override.conf
+  copy:
+    stc: override.conf
+    dest: /etc/systemd/system/keycloak.service.d/override.conf
+
+- name: Start and enable keycloak service
+  service:
+    name: keycloak
+    state: started
+    enabled: yes
+
 
