@@ -41,7 +41,8 @@
 - name: Change ownership of "keycloak" directory
   ansible.builtin.command:
     cmd: "chown -c -R {{ keycloak_user }}:{{ keycloak_group }} /opt/keycloak"
-    register: chown_status
+  register: chown_status
+  changed_when: chown_status.stdout != ""
 
 - name: Copy certificate into keycloak directory
   copy:
