@@ -71,7 +71,6 @@
   command:
     cmd: /opt/keycloak/bin/kc.sh build
     register: build_status
-    changed_when: "Server configuration updated and persisted." in build_status
   become_user: keycloak
 
 - name: Retrieve keycloak configuration
