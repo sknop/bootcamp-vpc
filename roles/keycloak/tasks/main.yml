@@ -70,13 +70,14 @@
 - name: Build the keycloak configuration
   command:
     cmd: /opt/keycloak/bin/kc.sh build
-    register: build_status
+  register: build_status
   become_user: keycloak
 
 - name: Retrieve keycloak configuration
   command:
     cmd: /opt/keycloak/bin/kc.sh show-config
-    register: keycloak_config
+  register: keycloak_config
+  become_user: keycloak
 
 - name: Debug output of keycloak configuration
   debug:
