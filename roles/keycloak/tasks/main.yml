@@ -85,6 +85,17 @@
 
 # Need to import realm Bootcamp here
 
+- name: Upload Bootcamp.realm file
+  copy:
+    src: Bootcamp.realm
+    dest: /home/ubuntu/Bootcamp.realm
+    mode: '0664'
+
+- name: Import Bootcamp.realm
+  command:
+    cmd: /opt/keycloak/bin/kc.sh import --file /home/ubuntu/Bootcamp.realm
+  register: import_realm
+  become_user: keycloak
 
 # Systemd setup for automatic starting and stopping of services
 
