@@ -124,6 +124,6 @@
 
 - name: Invite owner to update /etc/hosts on local machine
   debug:
-    msg: "Update /etc/hosts with\n{{ samba_ip_address }}      samba.{{ domain_name }}"
+    msg: "{{ samba_ip_address }}      samba.{{ domain_name }}"
 
 
