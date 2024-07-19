@@ -63,7 +63,7 @@
 - name: Copy "keycloak.conf" into /opt/keycloak/conf
   template:
     src: keycloak.conf.j2
-    dest: /opt/keycloak/conf
+    dest: /opt/keycloak/conf/keycloak.conf
     owner: keycloak
     group: keycloak
 
