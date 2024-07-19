@@ -88,12 +88,13 @@
 - name: Upload Bootcamp.realm file
   copy:
     src: Bootcamp.realm
-    dest: /home/ubuntu/Bootcamp.realm
+    dest: /tmp/Bootcamp.realm
+    owner: keycloak
     mode: '0664'
 
 - name: Import Bootcamp.realm
   command:
-    cmd: /opt/keycloak/bin/kc.sh import --file /home/ubuntu/Bootcamp.realm
+    cmd: /opt/keycloak/bin/kc.sh import --file /tmp/Bootcamp.realm
   register: import_realm
   become_user: keycloak
 
