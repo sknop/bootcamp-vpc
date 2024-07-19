@@ -83,6 +83,11 @@
   debug:
     msg: "{{ keycloak_config.stdout }}"
 
+# Need to import realm Bootcamp here
+
+
+# Systemd setup for automatic starting and stopping of services
+
 - name: Setup keycloak systemctl configuration
   copy:
     src: keycloak.service
