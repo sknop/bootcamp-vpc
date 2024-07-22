@@ -3,5 +3,8 @@ objectClass: user
 accountExpires: 0
 userPrincipalName: donald@{{realm}}
 sAMAccountName: donald
+givenName: Donald
+sn: Duck
+mail: dduck@{{realm}}
 userAccountControl: 66048
 unicodePwd:: IgBkAG8AbgBhAGwAZAAtAHMAZQBjAHIAZQB0ACIA
