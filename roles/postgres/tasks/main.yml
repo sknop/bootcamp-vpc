@@ -30,8 +30,8 @@
 - name: Enable access for keycloak user
   lineinfile:
     path: /etc/postgresql/16/main/pg_hba.conf
-    regexp: "hostssl { keycloak_database }}	{{ keycloak_user }}	127.0.0.1/32		scram-sha-256"
-    line:   "hostssl { keycloak_database }}	{{ keycloak_user }}	127.0.0.1/32		scram-sha-256"
+    regexp: "hostssl {{ keycloak_database }}	{{ keycloak_user }}	127.0.0.1/32		scram-sha-256"
+    line:   "hostssl {{ keycloak_database }}	{{ keycloak_user }}	127.0.0.1/32		scram-sha-256"
     insertafter: EOF
     state: present
   notify:
