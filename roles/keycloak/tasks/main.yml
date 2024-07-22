@@ -86,7 +86,7 @@
 # Need to import realm Bootcamp here
 
 - name: Upload Bootcamp.realm file
-  copy:
+  template:
     src: Bootcamp.realm
     dest: /tmp/Bootcamp.realm
     owner: keycloak
