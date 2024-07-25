@@ -1,0 +1,80 @@
+---
+- name: Install packages
+  package:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  loop:
+    - postgresql
+    - postgresql-contrib
+    - python3-psycopg2
+    - acl # required to solve https://docs.ansible.com/ansible-core/2.14/playbook_guide/playbooks_privilege_escalation.html#resolving-temporary-file-error-messsages
+
+- name: Start and enable PostgreSQL service
+  service:
+    name: postgresql
+    state: started
+    enabled: yes
+
+- name: Enable external access and logging in postgresql.conf
+  lineinfile:
+    path: /etc/postgresql/16/main/postgresql.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    backup: yes
+  loop:
+    - { regexp: 'listen_addresses', line: "listen_addresses = '*'" }
+  notify:
+    - Restart PostgreSQL
+
+- name: Enable access for keycloak user
+  lineinfile:
+    path: /etc/postgresql/16/main/pg_hba.conf
+    regexp: "hostssl {{ keycloak_database }}	{{ keycloak_user }}	127.0.0.1/32		scram-sha-256"
+    line:   "hostssl {{ keycloak_database }}	{{ keycloak_user }}	127.0.0.1/32		scram-sha-256"
+    insertafter: EOF
+    state: present
+  notify:
+    - Restart PostgreSQL
+
+- name: Create new database with name 'keycloak'
+  become: yes
+  become_user: postgres
+  postgresql_db:
+    name: "{{ keycloak_database }}"
+    state: present
+
+- name: Create 'keycloak' user
+  become: yes
+  become_user: postgres
+  postgresql_user:
+    name: "{{ keycloak_user }}"
+    password: "{{ keycloak_password }}"
+
+- name: GRANT 'keycloak' user access to db 'keycloak'
+  become: yes
+  become_user: postgres
+  postgresql_privs:
+    type: database
+    database: "{{ keycloak_database }}"
+    roles: "{{ keycloak_user }}"
+    grant_option: no
+    privs: ALL
+
+- name: GRANT 'keycloak' user access to schema 'public'
+  become: yes
+  become_user: postgres
+  postgresql_privs:
+    database: "{{ keycloak_database }}"
+    privs: ALL
+    type: schema
+    objs: public
+    roles: "{{ keycloak_user }}"
+
+- name: ALTER DATABASE keycloak OWNER TO keycloak
+  become: true
+  become_user: postgres
+  postgresql_owner:
+    db: keycloak
+    new_owner: keycloak
+    obj_type: database

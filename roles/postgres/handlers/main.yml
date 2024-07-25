@@ -1,0 +1,13 @@
+---
+# handlers file for postgres
+
+
+- name: Restart PostgreSQL
+  service:
+    name: postgresql
+    state: restarted
+
+- name: Restart postgresql@16-main
+  service:
+    name: postgresql@16-main
+    state: restarted

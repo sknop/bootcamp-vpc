@@ -3,5 +3,8 @@ objectClass: user
 accountExpires: 0
 userPrincipalName: greta@{{realm}}
 sAMAccountName: greta
+givenName: Greta
+sn: Thunberg
+mail: gthunberg@{{realm}}
 userAccountControl: 66048
 unicodePwd:: IgBnAHIAZQB0AGEALQBzAGUAYwByAGUAdAAiAA==

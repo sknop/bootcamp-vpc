@@ -1,0 +1,12 @@
+[Unit]
+Description=Keycloak Service Provider
+After=network.target
+
+[Service]
+User=keycloak
+WorkingDirectory=/opt/keycloak
+ExecStart=/opt/keycloak/bin/kc.sh start
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

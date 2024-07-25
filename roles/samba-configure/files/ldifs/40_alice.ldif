@@ -1,7 +1,10 @@
-dn: CN=Alice LookingGlass,OU=Users,OU=Kafka,{{ldap_base}}
+dn: CN=Alice Lookingglass,OU=Users,OU=Kafka,{{ldap_base}}
 objectClass: user
 accountExpires: 0
 userPrincipalName: alice@{{realm}}
 sAMAccountName: alice
+givenName: Alice
+sn: Lookingglass
+mail: alookingglass@{{realm}}
 userAccountControl: 66048
 unicodePwd:: IgBhAGwAaQBjAGUALQBzAGUAYwByAGUAdAAiAA==

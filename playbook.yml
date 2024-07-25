@@ -35,3 +35,8 @@
     - samba-configure
     - webservice
 
+- hosts: samba
+  roles:
+    - postgres
+    - keycloak
+

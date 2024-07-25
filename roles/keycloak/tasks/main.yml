@@ -1,0 +1,129 @@
+---
+- name: Install unzip package
+  package:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  loop:
+    - unzip
+
+- name: Creating keycloak user group
+  group:
+    name: "{{ keycloak_group }}"
+  become: true
+
+- name: Creating vault user
+  user:
+    name: "{{ keycloak_user }}"
+    group: "{{ keycloak_group }}"
+    system: yes
+    shell: "/sbin/nologin"
+    comment: "keycloak nologin user"
+    createhome: "no"
+    state: present
+
+- name: Download keycloak zip file
+  get_url:
+    url: "https://github.com/keycloak/keycloak/releases/download/{{ keycloak_release }}/keycloak-{{ keycloak_release }}.zip"
+    dest: /tmp/keycloak.zip
+
+- name: Unzip keycloak archive
+  unarchive:
+    src: /tmp/keycloak.zip
+    dest: /opt
+    remote_src: yes
+
+- name: Rename keycloak directory to canonized version
+  command:
+    cmd: "mv /opt/keycloak-{{ keycloak_release }} /opt/keycloak"
+    creates: /opt/keycloak
+
+- name: Change ownership of "keycloak" directory
+  ansible.builtin.command:
+    cmd: "chown -c -R {{ keycloak_user }}:{{ keycloak_group }} /opt/keycloak"
+  register: chown_status
+  changed_when: chown_status.stdout != ""
+
+- name: Copy certificate into keycloak directory
+  copy:
+    src: /home/ubuntu/samba.pem
+    dest: /opt/keycloak/conf/server.crt.pem
+    remote_src: yes
+    owner: keycloak
+    group: keycloak
+
+- name: Copy key into keycloak directory
+  copy:
+    src: /home/ubuntu/key.pem
+    dest: /opt/keycloak/conf/server.key.pem
+    remote_src: yes
+    owner: keycloak
+    group: keycloak
+
+- name: Copy "keycloak.conf" into /opt/keycloak/conf
+  template:
+    src: keycloak.conf.j2
+    dest: /opt/keycloak/conf/keycloak.conf
+    owner: keycloak
+    group: keycloak
+
+- name: Build the keycloak configuration
+  command:
+    cmd: /opt/keycloak/bin/kc.sh build
+  register: build_status
+  become_user: keycloak
+
+- name: Retrieve keycloak configuration
+  command:
+    cmd: /opt/keycloak/bin/kc.sh show-config
+  register: keycloak_config
+  become_user: keycloak
+
+- name: Debug output of keycloak configuration
+  debug:
+    msg: "{{ keycloak_config.stdout }}"
+
+# Need to import realm Bootcamp here
+
+- name: Upload Bootcamp.realm file
+  template:
+    src: Bootcamp.realm
+    dest: /tmp/Bootcamp.realm
+    owner: keycloak
+    mode: '0664'
+
+- name: Import Bootcamp.realm
+  command:
+    cmd: /opt/keycloak/bin/kc.sh import --file /tmp/Bootcamp.realm
+  register: import_realm
+  become_user: keycloak
+
+# Systemd setup for automatic starting and stopping of services
+
+- name: Setup keycloak systemctl configuration
+  copy:
+    src: keycloak.service
+    dest: /etc/systemd/system/keycloak.service
+
+- name: Create systemctl configuration directory
+  file:
+    path: /etc/systemd/system/keycloak.service.d
+    state: directory
+    mode: '0755'
+
+- name: Setup keycloak override.conf
+  template:
+    src: override.conf
+    dest: /etc/systemd/system/keycloak.service.d/override.conf
+
+- name: Start and enable keycloak service
+  service:
+    name: keycloak
+    state: started
+    enabled: yes
+
+- name: Invite owner to update /etc/hosts on local machine
+  debug:
+    msg: "{{ samba_ip_address }}      samba.{{ domain_name }}"
+
+

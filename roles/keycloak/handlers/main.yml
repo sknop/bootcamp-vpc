@@ -1,0 +1,5 @@
+---
+- name: Restart Keycloak
+  service:
+    name: keycloak
+    state: restarted
