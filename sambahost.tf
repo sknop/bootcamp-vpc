@@ -8,7 +8,7 @@ resource "aws_kms_key" "vault" {
 }
 
 resource "aws_kms_alias" "vault" {
-  name    = "alias/vault-unseal-key"
+  name    = var.vault-unseal-key-alias
   target_key_id = aws_kms_key.vault.key_id
 }
 
