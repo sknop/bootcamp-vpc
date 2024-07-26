@@ -79,6 +79,12 @@ variable "cflt_service" {
   type = string
 }
 
+variable "vault-unseal-key-alias" {
+  description = "A alias name for AWS KMS Key. Needs to be unique within a region and start with alias/"
+  type = string
+  default = "alias/vault-unseal-key"
+}
+
 variable "root-zone" {
   type = string
 }
