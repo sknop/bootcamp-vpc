@@ -39,7 +39,7 @@ def handle_exception(error):
 
 @app.route('/generate', methods=['POST'])
 def invoke_generator():
-    logger = logging.getLogger('bootcamp')
+    logger = logging.getLogger('bootcamp')x
     data_bytes = request.data
     hosts = json.loads(data_bytes)
 
@@ -81,7 +81,7 @@ def invoke_client_generator():
     generator = ClientGenerator(tmpdir.name, config_file, clients, "web-user")
     filename = os.path.join(tmpdir.name, generator.zip_file_name)
 
-    result = send_file(filename, attachment_filename=filename, mimetype='application/zip')
+    result = send_file(filename, download_name=filename, as_attachment=True, mimetype='application/zip')
 
     return result
 
