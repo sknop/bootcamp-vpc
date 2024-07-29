@@ -1,5 +1,5 @@
 import os
-from ldap3 import Connection, Server
+from ldap3 import Connection, Server, AUTO_BIND_NO_TLS
 import pexpect
 import zipfile
 import subprocess
@@ -97,7 +97,8 @@ class Generator:
         self.logger.info(f"{key} : {parser[key]}")
 
     def connect_ldap(self):
-        ldap = Connection(server=Server(self.ldaps_url, use_ssl=True), user=self.username, password=self.password)
+        ldap = Connection(server=Server(self.ldaps_url, use_ssl=True),
+                          user=self.username, password=self.password, auto_bind=AUTO_BIND_NO_TLS)
         self.logger.info(ldap)
 
         return ldap
