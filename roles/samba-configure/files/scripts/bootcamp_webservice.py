@@ -1,4 +1,4 @@
-#!/usrbin/env python3
+#!/usr/bin/env python3
 import logging
 
 from flask import Flask, request, json, send_file, render_template
@@ -52,7 +52,7 @@ def invoke_generator():
     generator = Generator(tmpdir.name, config_file, hosts, "web-user")
     filename = os.path.join(tmpdir.name, generator.zip_file_name)
 
-    result = send_file(filename, attachment_filename=filename, mimetype='application/zip')
+    result = send_file(filename, download_name=filename, as_attachment=True, mimetype='application/zip')
 
     return result
 
