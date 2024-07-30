@@ -39,7 +39,7 @@ def handle_exception(error):
 
 @app.route('/generate', methods=['POST'])
 def invoke_generator():
-    logger = logging.getLogger('bootcamp')x
+    logger = logging.getLogger('bootcamp')
     data_bytes = request.data
     hosts = json.loads(data_bytes)
 
