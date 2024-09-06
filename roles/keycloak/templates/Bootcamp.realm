@@ -245,11 +245,9 @@
         "containerId" : "fe0bc39e-8d07-47ad-bba9-f63020c4ed29",
         "attributes" : { }
       } ],
-      "c3-client" : [ ],
+      "ksql-client" : [ ],
       "rest-client" : [ ],
       "security-admin-console" : [ ],
-      "sr-client" : [ ],
-      "admin-cli" : [ ],
       "account-console" : [ ],
       "broker" : [ {
         "id" : "41c7c961-40f7-483a-97c1-c909fafc0769",
@@ -260,6 +258,10 @@
         "containerId" : "fb4e1eaa-95bd-4abf-a3d2-6b608e14e2c2",
         "attributes" : { }
       } ],
+      "c3_sso_login" : [ ],
+      "c3-client" : [ ],
+      "sr-client" : [ ],
+      "admin-cli" : [ ],
       "connect-client" : [ ],
       "account" : [ {
         "id" : "f77036ec-50be-4563-bd56-e5d7275fcb7c",
@@ -380,7 +382,7 @@
   "webAuthnPolicyPasswordlessAvoidSameAuthenticatorRegister" : false,
   "webAuthnPolicyPasswordlessAcceptableAaguids" : [ ],
   "webAuthnPolicyPasswordlessExtraOrigins" : [ ],
-  "users" : [ ],
+  "users" : [],
   "scopeMappings" : [ {
     "clientScope" : "offline_access",
     "roles" : [ "offline_access" ]
@@ -600,6 +602,90 @@
     "defaultClientScopes" : [ "web-origins", "acr", "profile", "roles", "basic", "email" ],
     "optionalClientScopes" : [ "address", "phone", "offline_access", "microprofile-jwt" ]
   }, {
+    "id" : "62fb8ee8-20ed-4ffc-8699-04e9105ed1a3",
+    "clientId" : "c3_sso_login",
+    "name" : "Control Center SSO login",
+    "description" : "",
+    "rootUrl" : "",
+    "adminUrl" : "",
+    "baseUrl" : "",
+    "surrogateAuthRequired" : false,
+    "enabled" : true,
+    "alwaysDisplayInConsole" : false,
+    "clientAuthenticatorType" : "client-secret",
+    "secret" : "c3_sso_login_secret",
+    "redirectUris" : [ "https://controlcenter-0.sven-spain.bootcamp-spain.confluent.io:9021/api/metadata/security/1.0/oidc/authorization-code/callback", "https://oauth.pstmn.io/v1/callback" ],
+    "webOrigins" : [ "https://controlcenter-0.sven-spain.bootcamp-spain.confluent.io:9021" ],
+    "notBefore" : 0,
+    "bearerOnly" : false,
+    "consentRequired" : false,
+    "standardFlowEnabled" : true,
+    "implicitFlowEnabled" : false,
+    "directAccessGrantsEnabled" : true,
+    "serviceAccountsEnabled" : true,
+    "publicClient" : false,
+    "frontchannelLogout" : true,
+    "protocol" : "openid-connect",
+    "attributes" : {
+      "oidc.ciba.grant.enabled" : "false",
+      "client.secret.creation.time" : "1725455117",
+      "backchannel.logout.session.required" : "true",
+      "oauth2.device.authorization.grant.enabled" : "false",
+      "display.on.consent.screen" : "false",
+      "backchannel.logout.revoke.offline.tokens" : "false"
+    },
+    "authenticationFlowBindingOverrides" : { },
+    "fullScopeAllowed" : true,
+    "nodeReRegistrationTimeout" : -1,
+    "protocolMappers" : [ {
+      "id" : "f6b8dadd-7bb1-4a73-ac31-294aa6a52e73",
+      "name" : "Client Host",
+      "protocol" : "openid-connect",
+      "protocolMapper" : "oidc-usersessionmodel-note-mapper",
+      "consentRequired" : false,
+      "config" : {
+        "user.session.note" : "clientHost",
+        "introspection.token.claim" : "true",
+        "userinfo.token.claim" : "true",
+        "id.token.claim" : "true",
+        "access.token.claim" : "true",
+        "claim.name" : "clientHost",
+        "jsonType.label" : "String"
+      }
+    }, {
+      "id" : "4f021ec0-8447-4de8-92f2-0695aa2ea222",
+      "name" : "Client IP Address",
+      "protocol" : "openid-connect",
+      "protocolMapper" : "oidc-usersessionmodel-note-mapper",
+      "consentRequired" : false,
+      "config" : {
+        "user.session.note" : "clientAddress",
+        "introspection.token.claim" : "true",
+        "userinfo.token.claim" : "true",
+        "id.token.claim" : "true",
+        "access.token.claim" : "true",
+        "claim.name" : "clientAddress",
+        "jsonType.label" : "String"
+      }
+    }, {
+      "id" : "3f0f75fc-784d-4b90-aa8a-c3168775f716",
+      "name" : "Client ID",
+      "protocol" : "openid-connect",
+      "protocolMapper" : "oidc-usersessionmodel-note-mapper",
+      "consentRequired" : false,
+      "config" : {
+        "user.session.note" : "client_id",
+        "introspection.token.claim" : "true",
+        "userinfo.token.claim" : "true",
+        "id.token.claim" : "true",
+        "access.token.claim" : "true",
+        "claim.name" : "client_id",
+        "jsonType.label" : "String"
+      }
+    } ],
+    "defaultClientScopes" : [ "web-origins", "acr", "profile", "roles", "basic", "email" ],
+    "optionalClientScopes" : [ "address", "phone", "offline_access", "microprofile-jwt" ]
+  }, {
     "id" : "c0670331-71f7-4c4a-9284-7e0545b7a2cf",
     "clientId" : "connect-client",
     "name" : "Connect client",
@@ -666,6 +752,90 @@
       }
     }, {
       "id" : "16f5af13-5ff5-47ae-8357-08c76727f83f",
+      "name" : "Client IP Address",
+      "protocol" : "openid-connect",
+      "protocolMapper" : "oidc-usersessionmodel-note-mapper",
+      "consentRequired" : false,
+      "config" : {
+        "user.session.note" : "clientAddress",
+        "introspection.token.claim" : "true",
+        "userinfo.token.claim" : "true",
+        "id.token.claim" : "true",
+        "access.token.claim" : "true",
+        "claim.name" : "clientAddress",
+        "jsonType.label" : "String"
+      }
+    } ],
+    "defaultClientScopes" : [ "web-origins", "acr", "profile", "roles", "basic", "email" ],
+    "optionalClientScopes" : [ "address", "phone", "offline_access", "microprofile-jwt" ]
+  }, {
+    "id" : "e231e724-a951-4b5c-9dfc-fd32cb9792f3",
+    "clientId" : "ksql-client",
+    "name" : "KSQL Client",
+    "description" : "Client used for KSQL service",
+    "rootUrl" : "",
+    "adminUrl" : "",
+    "baseUrl" : "",
+    "surrogateAuthRequired" : false,
+    "enabled" : true,
+    "alwaysDisplayInConsole" : true,
+    "clientAuthenticatorType" : "client-secret",
+    "secret" : "ksql-client-secret",
+    "redirectUris" : [ "/*" ],
+    "webOrigins" : [ "/*" ],
+    "notBefore" : 0,
+    "bearerOnly" : false,
+    "consentRequired" : false,
+    "standardFlowEnabled" : true,
+    "implicitFlowEnabled" : false,
+    "directAccessGrantsEnabled" : true,
+    "serviceAccountsEnabled" : true,
+    "publicClient" : false,
+    "frontchannelLogout" : true,
+    "protocol" : "openid-connect",
+    "attributes" : {
+      "oidc.ciba.grant.enabled" : "false",
+      "client.secret.creation.time" : "1725623466",
+      "backchannel.logout.session.required" : "true",
+      "oauth2.device.authorization.grant.enabled" : "false",
+      "display.on.consent.screen" : "false",
+      "backchannel.logout.revoke.offline.tokens" : "false"
+    },
+    "authenticationFlowBindingOverrides" : { },
+    "fullScopeAllowed" : true,
+    "nodeReRegistrationTimeout" : -1,
+    "protocolMappers" : [ {
+      "id" : "1b267910-db93-45b9-8226-4b9869576ff8",
+      "name" : "Client Host",
+      "protocol" : "openid-connect",
+      "protocolMapper" : "oidc-usersessionmodel-note-mapper",
+      "consentRequired" : false,
+      "config" : {
+        "user.session.note" : "clientHost",
+        "introspection.token.claim" : "true",
+        "userinfo.token.claim" : "true",
+        "id.token.claim" : "true",
+        "access.token.claim" : "true",
+        "claim.name" : "clientHost",
+        "jsonType.label" : "String"
+      }
+    }, {
+      "id" : "a2fc90b7-c843-4290-81c7-632cac37c865",
+      "name" : "Client ID",
+      "protocol" : "openid-connect",
+      "protocolMapper" : "oidc-usersessionmodel-note-mapper",
+      "consentRequired" : false,
+      "config" : {
+        "user.session.note" : "client_id",
+        "introspection.token.claim" : "true",
+        "userinfo.token.claim" : "true",
+        "id.token.claim" : "true",
+        "access.token.claim" : "true",
+        "claim.name" : "client_id",
+        "jsonType.label" : "String"
+      }
+    }, {
+      "id" : "f8e1ba0e-836c-4ac8-ac88-6f057f051691",
       "name" : "Client IP Address",
       "protocol" : "openid-connect",
       "protocolMapper" : "oidc-usersessionmodel-note-mapper",
@@ -1730,7 +1900,7 @@
         "pagination" : [ "false" ],
         "startTls" : [ "false" ],
         "connectionPooling" : [ "false" ],
-        "usersDn" : [ "OU=Kafka,{{ ldap_base }}" ],
+        "usersDn" : [ "OU=Kafka,DC=BOOTCAMP-SPAIN,DC=CONFLUENT,DC=IO" ],
         "cachePolicy" : [ "DEFAULT" ],
         "useKerberosForPasswordAuthentication" : [ "false" ],
         "importEnabled" : [ "true" ],
@@ -1738,11 +1908,11 @@
         "changedSyncPeriod" : [ "-1" ],
         "usernameLDAPAttribute" : [ "sAMAccountName" ],
         "bindCredential" : [ "alice-secret" ],
-        "bindDn" : [ "CN=Alice LookingGlass,OU=Users,OU=Kafka,{{ ldap_base }}" ],
+        "bindDn" : [ "CN=Alice LookingGlass,OU=Users,OU=Kafka,DC=BOOTCAMP-SPAIN,DC=CONFLUENT,DC=IO" ],
         "vendor" : [ "ad" ],
         "uuidLDAPAttribute" : [ "objectGUID" ],
         "allowKerberosAuthentication" : [ "false" ],
-        "connectionUrl" : [ "LDAPS://samba.{{ domain_name }}" ],
+        "connectionUrl" : [ "LDAPS://samba.bootcamp-spain.confluent.io" ],
         "syncRegistrations" : [ "true" ],
         "authType" : [ "simple" ],
         "krbPrincipalAttribute" : [ "userPrincipalName" ],
