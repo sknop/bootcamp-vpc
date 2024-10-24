@@ -28,10 +28,7 @@
       - libpam-krb5
       - ldap-utils
       - openjdk-21-jdk
-      - python3-ldap3
-      - python3-flask
-      - python3-gunicorn
-      - gunicorn
+      - python3-venv
     state: present
     update_cache: true
     cache_valid_time: 3600
@@ -42,6 +39,15 @@
   register: samba_configured
   changed_when: false
 
+- name: Set up Python virtualenv with required packages
+  pip:
+    name:
+      - ldap3
+      - keycloak
+      - gunicorn
+      - flask
+    virtualenv: /home/ubuntu/.local
+    
 - name: Remove old krb5.conf (if there)
   file:
     path: /etc/krb5.conf
