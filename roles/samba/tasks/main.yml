@@ -29,6 +29,7 @@
       - ldap-utils
       - openjdk-21-jdk
       - python3-venv
+      - python3-virtualenv
     state: present
     update_cache: true
     cache_valid_time: 3600
