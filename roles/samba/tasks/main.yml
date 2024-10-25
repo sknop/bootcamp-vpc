@@ -43,11 +43,11 @@
   pip:
     name:
       - ldap3
-      - keycloak
+      - python-keycloak
       - gunicorn
       - flask
     virtualenv: /home/ubuntu/.local
-    
+
 - name: Remove old krb5.conf (if there)
   file:
     path: /etc/krb5.conf
