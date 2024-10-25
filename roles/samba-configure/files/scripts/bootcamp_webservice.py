@@ -5,6 +5,7 @@ from flask import Flask, request, json, send_file, render_template
 from werkzeug.exceptions import HTTPException
 from bootcamp import Generator
 from bootcamp_clients import ClientGenerator
+from keycloak_updater import KeycloakUpdater
 
 import json
 import sys
@@ -89,9 +90,16 @@ def invoke_client_generator():
 @app.route('/registerRedirectURI', methods=['POST'])
 def invoke_register_redirect_uri():
     logger = logging.getLogger('bootcamp')
-    request_uri = request.data
+    request_bytes = request.data
+    request_uri = request_bytes.decode('utf-8')
 
     logger.info(f"Received request to add {request_uri}")
+    config_file = find_config_file()
+
+    keycloak_updater = KeycloakUpdater(config_file)
+    keycloak_updater.update_c3_client(request_uri)
+
+    return "Successfully updated redirect URIS"
 
 def find_config_file():
     config_file = "/home/ubuntu/scripts/create-services.properties"
