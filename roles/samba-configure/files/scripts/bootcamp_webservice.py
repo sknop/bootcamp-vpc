@@ -86,6 +86,13 @@ def invoke_client_generator():
     return result
 
 
+@app.route('/registerRedirectURI', methods=['POST'])
+def invoke_register_redirect_uri():
+    logger = logging.getLogger('bootcamp')
+    request_uri = request.data
+
+    logger.info(f"Received request to add {request_uri}")
+
 def find_config_file():
     config_file = "/home/ubuntu/scripts/create-services.properties"
 

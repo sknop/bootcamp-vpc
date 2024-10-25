@@ -41,12 +41,14 @@
   changed_when: false
 
 - name: Set up Python virtualenv with required packages
+  become_user: ubuntu
   pip:
     name:
       - ldap3
       - python-keycloak
       - gunicorn
       - flask
+      - pexpect
     virtualenv: /home/ubuntu/.local
 
 - name: Remove old krb5.conf (if there)
