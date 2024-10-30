@@ -83,21 +83,6 @@
   debug:
     msg: "{{ keycloak_config.stdout }}"
 
-# Need to import realm Bootcamp here
-
-- name: Upload Bootcamp.realm file
-  template:
-    src: Bootcamp.realm
-    dest: /tmp/Bootcamp.realm
-    owner: keycloak
-    mode: '0664'
-
-- name: Import Bootcamp.realm
-  command:
-    cmd: /opt/keycloak/bin/kc.sh import --file /tmp/Bootcamp.realm
-  register: import_realm
-  become_user: keycloak
-
 # Systemd setup for automatic starting and stopping of services
 
 - name: Setup keycloak systemctl configuration

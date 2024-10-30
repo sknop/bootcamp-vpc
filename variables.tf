@@ -79,6 +79,14 @@ variable "cflt_service" {
   type = string
 }
 
+variable "keycloak_admin_user" {
+  default = "keycloak"
+}
+
+variable "keycloak_admin_secret" {
+  default = "keycloakpass"
+}
+
 variable "vault-unseal-key-alias" {
   description = "A alias name for AWS KMS Key. Needs to be unique within a region and start with alias/"
   type = string

@@ -15,6 +15,10 @@ region=${region}
 kms_key_id=${kms_key}
 samba_ip_address=${samba_ip_address}
 
+# keycloak admin
+keycloak_admin_user=${keycloak_admin_user}
+keycloak_admin_password=${keycloak_admin_password}
+
 # Do not touch these, automatically generated
 realm={{domain_name | upper}}
 ldap_base={{ ['DC='] | product(realm.split('.')) | map('join') | join(',') }}

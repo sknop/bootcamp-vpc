@@ -1,0 +1,9 @@
+client_id,name,description,client_secret
+c3-client,Confluent Control Center Client,Client for the Confluent Control Center,c3-client-secret
+connect-client,Kafka Connect Client,Client for Kafka Connect,connect-client-secret
+ksql-client,KsqlDB Client,Client for KsqlDB,ksql-client-secret
+producer,Kafka Producer,Should be given WRITE permissions for target topics,producer-secret
+consumer,Kafka Consumer,Should be given permissions to read from target topics,consumer-secret
+superuser,Superuser,Owner of the Confluent Server and Services for bootstrapping,superuser-secret
+rest-client,Kafka REST client,Client for Kafka REST client,rest-client-secret
+sr-client,Schema Registry Client,Service user for schema registry,sr-client-secret
