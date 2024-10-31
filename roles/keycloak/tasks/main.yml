@@ -1,11 +1,12 @@
 ---
-- name: Install unzip package
+- name: Install unzip and terraform package
   package:
     name: "{{item}}"
     state: present
     update_cache: yes
   loop:
     - unzip
+    - terraform
 
 - name: Creating keycloak user group
   group:
