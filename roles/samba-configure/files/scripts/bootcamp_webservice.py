@@ -97,9 +97,9 @@ def invoke_register_redirect_uri():
     config_file = find_config_file()
 
     keycloak_updater = KeycloakUpdater(config_file)
-    keycloak_updater.update_c3_client(request_uri)
+    result = keycloak_updater.update_c3_client(request_uri)
 
-    return "Successfully updated redirect URIS"
+    return result
 
 def find_config_file():
     config_file = "/home/ubuntu/scripts/create-services.properties"

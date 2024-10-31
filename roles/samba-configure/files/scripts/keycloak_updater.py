@@ -2,12 +2,36 @@ import configparser
 import logging
 import sys
 import os
+import pathlib
+import fcntl
 
 from keycloak import KeycloakAdmin
 
 C3_SSO_LOGIN='c3_sso_login'
 REDIRECT_URIS='redirectUris'
 ENDPOINT='/api/metadata/security/1.0/oidc/authorization-code/callback'
+
+LOCK_FILE="/tmp/keycloak-updater.flock"
+
+class FileLocker:
+    def __init__(self, filename):
+        self.filename = pathlib.Path().joinpath(filename)
+        self.fd = None
+
+    def lock_file(self):
+        self.fd = self.filename.open("w")
+        fcntl.lockf(self.fd, fcntl.LOCK_EX)
+
+    def unlock_file(self):
+        fcntl.lockf(self.fd, fcntl.LOCK_UN)
+        self.fd.close()
+        self.fd = None
+
+    def __enter__(self):
+        self.lock_file()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.unlock_file()
 
 class KeycloakUpdater:
     def __init__(self, config_file):
@@ -53,25 +77,31 @@ class KeycloakUpdater:
         self.logger.info(f"{key} : {parser[key]}")
 
     def update_c3_client(self, request_uri):
-        admin = KeycloakAdmin(
-            server_url=self.keycloak_url,
-            username=self.keycloak_username,
-            password=self.keycloak_password,
-            client_id='admin-cli',
-            grant_type='password',
-            verify='/home/ubuntu/root-ca.pem')
+        with FileLocker(LOCK_FILE):
+            admin = KeycloakAdmin(
+                server_url=self.keycloak_url,
+                username=self.keycloak_username,
+                password=self.keycloak_password,
+                client_id='admin-cli',
+                grant_type='password',
+                verify='/home/ubuntu/root-ca.pem')
 
-        admin.change_current_realm(self.keycloak_bootcamp_realm)
+            admin.change_current_realm(self.keycloak_bootcamp_realm)
 
-        c3_sso_login_id = admin.get_client_id(C3_SSO_LOGIN)
-        c3_sso_login_client = admin.get_client(c3_sso_login_id)
-        redirect_uris = c3_sso_login_client[REDIRECT_URIS]
+            c3_sso_login_id = admin.get_client_id(C3_SSO_LOGIN)
+            c3_sso_login_client = admin.get_client(c3_sso_login_id)
+            redirect_uris = c3_sso_login_client[REDIRECT_URIS]
 
-        if not request_uri.endswith(ENDPOINT):
-            request_uri += ENDPOINT
+            if not request_uri.endswith(ENDPOINT):
+                request_uri += ENDPOINT
 
-        redirect_uris.append(request_uri)
-        c3_sso_login_client[REDIRECT_URIS] = redirect_uris
+            if not request_uri in redirect_uris:
+                redirect_uris.append(request_uri)
+                c3_sso_login_client[REDIRECT_URIS] = redirect_uris
 
-        admin.update_client(c3_sso_login_id, c3_sso_login_client)
+                admin.update_client(c3_sso_login_id, c3_sso_login_client)
+                self.logger.info(f"Updated {redirect_uris}")
+            else:
+                self.logger.info(f"URI {request_uri} already present in {redirect_uris}")
 
+            return redirect_uris
