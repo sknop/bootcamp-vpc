@@ -117,6 +117,6 @@
     state: present
     variables:
       keycloak_admin_user: '{{ keycloak_admin_user }}'
-      keycloak_admin_secret: '{{ keycloak_admin_secret }}'
+      keycloak_admin_password: '{{ keycloak_admin_password }}'
       keycloak_url: 'https://samba.{{ domain_name }}:8443'
 

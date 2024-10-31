@@ -15,7 +15,7 @@ variable "keycloak_admin_user" {
   default = "keycloak"
 }
 
-variable "keycloak_admin_secret" {
+variable "keycloak_admin_password" {
   default = "keycloakpass"
 }
 
@@ -26,7 +26,7 @@ variable "keycloak_url" {
 provider "keycloak" {
   client_id     = "admin-cli"
   username      = var.keycloak_admin_user
-  password      = var.keycloak_admin_secret
+  password      = var.keycloak_admin_password
   url           = var.keycloak_url
 }
 
