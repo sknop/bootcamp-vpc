@@ -1,13 +1,33 @@
+terraform {
+  required_providers {
+    keycloak = {
+      source  = "mrparkers/keycloak"
+      version = "4.4.0"
+    }
+  }
+}
 
 variable "service_clients_file" {
   default = "service_clients.csv"
+}
+
+variable "keycloak_admin_user" {
+  default = "keycloak"
+}
+
+variable "keycloak_admin_secret" {
+  default = "keycloakpass"
+}
+
+variable "keycloak_url" {
+  type = string
 }
 
 provider "keycloak" {
   client_id     = "admin-cli"
   username      = var.keycloak_admin_user
   password      = var.keycloak_admin_secret
-  url           = "https://${aws_instance.sambahost.public_dns}:8443"
+  url           = var.keycloak_url
 }
 
 resource "keycloak_realm" "bootcamp" {
@@ -17,10 +37,6 @@ resource "keycloak_realm" "bootcamp" {
   display_name_html = "<b>Bootcamp Realm</b"
 
   login_theme   = "base"
-
-  depends_on = [
-    null_resource.ansible-playbook
-  ]
 }
 
 locals {
@@ -30,7 +46,7 @@ locals {
 module "clients" {
   count = length(local.service_clients)
 
-  source = "./clients"
+  source = "clients"
 
   realm_id = keycloak_realm.bootcamp.id
   client_id = element(local.service_clients, count.index).client_id

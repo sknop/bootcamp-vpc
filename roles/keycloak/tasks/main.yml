@@ -111,4 +111,12 @@
   debug:
     msg: "{{ samba_ip_address }}      samba.{{ domain_name }}"
 
+- name: Configure Bootcamp realm via Terraform
+  community.general.terraform:
+    project_path: '{{ role_path }}/terraform'
+    state: present
+    variables:
+      keycloak_admin_user: '{{ keycloak_admin_user }}'
+      keycloak_admin_secret: '{{ keycloak_admin_secret }}'
+      keycloak_url: 'https://samba.{{ domain_name }}:8443'
 
