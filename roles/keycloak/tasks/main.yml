@@ -113,7 +113,7 @@
     msg: "{{ samba_ip_address }}      samba.{{ domain_name }}"
 
 - name: Copy Terraform files to Samba host
-  cp:
+  copy:
     src: terraform
     dest: /home/ubuntu
 
