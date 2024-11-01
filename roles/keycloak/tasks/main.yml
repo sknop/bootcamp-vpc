@@ -112,9 +112,14 @@
   debug:
     msg: "{{ samba_ip_address }}      samba.{{ domain_name }}"
 
+- name: Copy Terraform files to Samba host
+  cp:
+    src: terraform
+    dest: /home/ubuntu
+
 - name: Configure Bootcamp realm via Terraform
   community.general.terraform:
-    project_path: '{{ role_path }}/terraform'
+    project_path: '/home/ubuntu/terraform'
     state: present
     variables:
       keycloak_admin_user: '{{ keycloak_admin_user }}'

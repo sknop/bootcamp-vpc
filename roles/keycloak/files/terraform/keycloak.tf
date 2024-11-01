@@ -40,7 +40,7 @@ resource "keycloak_realm" "bootcamp" {
 }
 
 locals {
-  service_clients = csvdecode(file("${path.module}/${var.service_clients_file}"))
+  service_clients = csvdecode(file("/home/ubuntu/terraform/${var.service_clients_file}"))
 }
 
 module "clients" {
