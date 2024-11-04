@@ -89,7 +89,7 @@ resource "keycloak_openid_client" "c3_sso_login" {
 
 resource "keycloak_ldap_user_federation" "ldap_user_federation" {
   name = "Samba LDAP"
-  realm_id = keycloak_realm.bootcamp
+  realm_id = keycloak_realm.bootcamp.id
   enabled = true
 
   username_ldap_attribute = "sAMAccountName"
