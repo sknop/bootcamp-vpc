@@ -121,8 +121,11 @@
   community.general.terraform:
     project_path: '/home/ubuntu/terraform'
     state: present
+    force_init: true
     variables:
       keycloak_admin_user: '{{ keycloak_admin_user }}'
       keycloak_admin_password: '{{ keycloak_admin_password }}'
       keycloak_url: 'https://samba.{{ domain_name }}:8443'
+      ldap_server: "ldaps://samba.{{ domain_name }}:636"
+      ldap_base: "{{ ldap_base }}
 

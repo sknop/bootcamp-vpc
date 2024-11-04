@@ -23,6 +23,14 @@ variable "keycloak_url" {
   type = string
 }
 
+variable "ldap_server" {
+  type = string
+}
+
+variable "ldap_base" {
+  type = string
+}
+
 provider "keycloak" {
   client_id     = "admin-cli"
   username      = var.keycloak_admin_user
@@ -46,7 +54,7 @@ locals {
 module "clients" {
   count = length(local.service_clients)
 
-  source = "clients"
+  source = "./clients"
 
   realm_id = keycloak_realm.bootcamp.id
   client_id = element(local.service_clients, count.index).client_id
@@ -77,4 +85,63 @@ resource "keycloak_openid_client" "c3_sso_login" {
     "+"
   ]
   client_secret = "c3_sso_login_secret"
+}
+
+resource "keycloak_ldap_user_federation" "ldap_user_federation" {
+  name = "Samba LDAP"
+  realm_id = keycloak_realm.bootcamp
+  enabled = true
+
+  username_ldap_attribute = "sAMAccountName"
+  rdn_ldap_attribute      = "cn"
+  uuid_ldap_attribute     = "objectGUID"
+  user_object_classes     = [
+    "person",
+    "organizationalPerson",
+    "user"
+  ]
+
+  connection_url          = var.ldap_server
+  users_dn                = "OU=Users,OU=Kafka,${var.ldap_base}"
+  bind_dn                 = "CN=Alice Lookingglass,OU=Users,OU=Kafka,${var.ldap_base}"
+  bind_credential         = "alice-secret"
+  search_scope            = "SUBTREE"
+  full_sync_period        = 300 # 5 minutes
+  changed_sync_period     = 60 # 1 minute
+}
+
+resource "keycloak_ldap_user_attribute_mapper" "Username" {
+  realm_id                = keycloak_realm.bootcamp.id
+  ldap_user_federation_id = keycloak_ldap_user_federation.ldap_user_federation.id
+  name                    = "username"
+
+  user_model_attribute    = "username"
+  ldap_attribute          = "sAMAccountName"
+}
+
+resource "keycloak_ldap_user_attribute_mapper" "email" {
+  realm_id                = keycloak_realm.bootcamp.id
+  ldap_user_federation_id = keycloak_ldap_user_federation.ldap_user_federation.id
+  name                    = "email"
+
+  user_model_attribute    = "email"
+  ldap_attribute          = "mail"
+}
+
+resource "keycloak_ldap_user_attribute_mapper" "firstname" {
+  realm_id                = keycloak_realm.bootcamp.id
+  ldap_user_federation_id = keycloak_ldap_user_federation.ldap_user_federation.id
+  name                    = "first name"
+
+  user_model_attribute    = "firstName"
+  ldap_attribute          = "givenName"
+}
+
+resource "keycloak_ldap_user_attribute_mapper" "lastname" {
+  realm_id                = keycloak_realm.bootcamp.id
+  ldap_user_federation_id = keycloak_ldap_user_federation.ldap_user_federation.id
+  name                    = "email"
+
+  user_model_attribute    = "lastName"
+  ldap_attribute          = "sn"
 }
