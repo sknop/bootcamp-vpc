@@ -127,5 +127,5 @@
       keycloak_admin_password: '{{ keycloak_admin_password }}'
       keycloak_url: 'https://samba.{{ domain_name }}:8443'
       ldap_server: "ldaps://samba.{{ domain_name }}:636"
-      ldap_base: "{{ ldap_base }}
+      ldap_base: "{{ ldap_base }}"
 
