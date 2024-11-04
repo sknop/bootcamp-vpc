@@ -107,6 +107,10 @@
     name: keycloak
     state: started
     enabled: yes
+  register: keycloakServiceDetails
+  until: keycloakServiceDetails.status.ActiveState == "active"
+  retries: 15
+  delay: 20
 
 - name: Invite owner to update /etc/hosts on local machine
   debug:
@@ -116,6 +120,7 @@
   copy:
     src: terraform
     dest: /home/ubuntu
+    owner: ubuntu
 
 - name: Configure Bootcamp realm via Terraform
   community.general.terraform:
