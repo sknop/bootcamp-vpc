@@ -13,7 +13,7 @@
     name: "{{ keycloak_group }}"
   become: true
 
-- name: Creating vault user
+- name: Creating keycloak user
   user:
     name: "{{ keycloak_user }}"
     group: "{{ keycloak_group }}"
