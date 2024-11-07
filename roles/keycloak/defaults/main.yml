@@ -1,7 +1,10 @@
 ---
 keycloak_user: keycloak
 keycloak_group: keycloak
-keycloak_release: 25.0.2
+keycloak_release: 26.0.1
 keycloak_database: keycloak
 keycloak_admin_user: keycloak
 keycloak_admin_password: keycloakpass
+keycloak_tmp_admin: tmpadm
+keycloak_tmp_secret: secret
+

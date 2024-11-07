@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=keycloak
 WorkingDirectory=/opt/keycloak
-ExecStart=/opt/keycloak/bin/kc.sh start
+ExecStart=/opt/keycloak/bin/kc.sh start --optimized
 Restart=always
 
 [Install]

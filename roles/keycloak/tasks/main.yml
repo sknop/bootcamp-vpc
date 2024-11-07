@@ -1,18 +1,19 @@
 ---
-- name: Install unzip package
+- name: Install unzip and terraform package
   package:
     name: "{{item}}"
     state: present
     update_cache: yes
   loop:
     - unzip
+    - terraform
 
 - name: Creating keycloak user group
   group:
     name: "{{ keycloak_group }}"
   become: true
 
-- name: Creating vault user
+- name: Creating keycloak user
   user:
     name: "{{ keycloak_user }}"
     group: "{{ keycloak_group }}"
@@ -83,19 +84,10 @@
   debug:
     msg: "{{ keycloak_config.stdout }}"
 
-# Need to import realm Bootcamp here
-
-- name: Upload Bootcamp.realm file
-  template:
-    src: Bootcamp.realm
-    dest: /tmp/Bootcamp.realm
-    owner: keycloak
-    mode: '0664'
-
-- name: Import Bootcamp.realm
-  command:
-    cmd: /opt/keycloak/bin/kc.sh import --file /tmp/Bootcamp.realm
-  register: import_realm
+- name: Set up bootstrap user
+  shell:
+    cmd: "ADMINPASS={{ keycloak_tmp_secret }} /opt/keycloak/bin/kc.sh bootstrap-admin user --username {{ keycloak_tmp_admin }} --password:env ADMINPASS"
+  register: keycloak_bootstrap_admin
   become_user: keycloak
 
 # Systemd setup for automatic starting and stopping of services
@@ -111,19 +103,41 @@
     state: directory
     mode: '0755'
 
-- name: Setup keycloak override.conf
-  template:
-    src: override.conf
-    dest: /etc/systemd/system/keycloak.service.d/override.conf
-
 - name: Start and enable keycloak service
   service:
     name: keycloak
     state: started
     enabled: yes
+  register: keycloakServiceDetails
+  until: keycloakServiceDetails.status.ActiveState == "active"
+  retries: 15
+  delay: 20
 
 - name: Invite owner to update /etc/hosts on local machine
   debug:
     msg: "{{ samba_ip_address }}      samba.{{ domain_name }}"
 
+- name: Copy Terraform files to Samba host
+  copy:
+    src: terraform
+    dest: /home/ubuntu
+    owner: ubuntu
+
+- name: Delay invoking Terraform to let keycloak to become available
+  ansible.builtin.pause:
+    seconds: 5
+
+- name: Configure Bootcamp realm via Terraform
+  community.general.terraform:
+    project_path: '/home/ubuntu/terraform'
+    state: present
+    force_init: true
+    variables:
+      keycloak_admin_user: "{{ keycloak_admin_user }}"
+      keycloak_admin_password: "{{ keycloak_admin_password }}"
+      keycloak_tmp_admin: "{{ keycloak_tmp_admin }}"
+      keycloak_tmp_secret: "{{ keycloak_tmp_secret }}"
+      keycloak_url: 'https://samba.{{ domain_name }}:8443'
+      ldap_server: "ldaps://samba.{{ domain_name }}:636"
+      ldap_base: "{{ ldap_base }}"
 

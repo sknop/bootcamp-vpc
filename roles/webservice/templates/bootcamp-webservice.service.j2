@@ -5,7 +5,7 @@ After=network.target vault.target
 [Service]
 User=ubuntu
 WorkingDirectory=/home/ubuntu/scripts
-ExecStart=/usr/bin/gunicorn -b samba.{{domain_name}}:8000 -w 4 --threads 8 -t 120 bootcamp_webservice:app
+ExecStart=/home/ubuntu/.local/bin/gunicorn -b samba.{{domain_name}}:8000 -w 4 --threads 8 -t 120 bootcamp_webservice:app
 Restart=always
 
 [Install]

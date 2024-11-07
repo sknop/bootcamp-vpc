@@ -15,6 +15,8 @@ resource "local_file" "ansible_inventory" {
     domain = var.root-zone
     region = var.region
     kms_key = aws_kms_key.vault.key_id
+    keycloak_admin_user = var.keycloak_admin_user
+    keycloak_admin_secret = var.keycloak_admin_secret
   })
   filename = var.inventory_file
 }
