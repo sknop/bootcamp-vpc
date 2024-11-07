@@ -86,7 +86,7 @@
 
 - name: Set up bootstrap user
   shell:
-    cmd: "ADMINPASS={{ keycloak_tmp_secret }} /opt/keycloak/bin/kc.sh bootstrap-admin user --username {{ keycloak_tmp_secret }} --password:env ADMINPASS"
+    cmd: "ADMINPASS={{ keycloak_tmp_secret }} /opt/keycloak/bin/kc.sh bootstrap-admin user --username {{ keycloak_tmp_admin }} --password:env ADMINPASS"
   register: keycloak_bootstrap_admin
   become_user: keycloak
 
