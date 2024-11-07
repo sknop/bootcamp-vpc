@@ -85,7 +85,7 @@
     msg: "{{ keycloak_config.stdout }}"
 
 - name: Set up bootstrap user
-  command:
+  shell:
     cmd: ADMINPASS=secret /opt/keycloak/bin/kc.sh bootstrap-admin user --username tmpadm --password:env ADMINPASS
   register: keycloak_bootstrap_admin
   become_user: keycloak
