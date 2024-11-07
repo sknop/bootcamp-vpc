@@ -84,6 +84,12 @@
   debug:
     msg: "{{ keycloak_config.stdout }}"
 
+- name: Set up bootstrap user
+  command:
+    cmd: ADMINPASS=secret /opt/keycloak/bin/kc.sh bootstrap-admin user --username tmpadm --password:env ADMINPASS
+  register: keycloak_bootstrap_admin
+  become_user: keycloak
+
 # Systemd setup for automatic starting and stopping of services
 
 - name: Setup keycloak systemctl configuration
@@ -96,11 +102,6 @@
     path: /etc/systemd/system/keycloak.service.d
     state: directory
     mode: '0755'
-
-- name: Setup keycloak override.conf
-  template:
-    src: override.conf
-    dest: /etc/systemd/system/keycloak.service.d/override.conf
 
 - name: Start and enable keycloak service
   service:
@@ -122,14 +123,18 @@
     dest: /home/ubuntu
     owner: ubuntu
 
+- name: Delay invoking Terraform to let keycloak to become available
+  ansible.builtin.pause:
+    seconds: 5
+
 - name: Configure Bootcamp realm via Terraform
   community.general.terraform:
     project_path: '/home/ubuntu/terraform'
     state: present
     force_init: true
     variables:
-      keycloak_admin_user: '{{ keycloak_admin_user }}'
-      keycloak_admin_password: '{{ keycloak_admin_password }}'
+      keycloak_admin_user: tmpadm
+      keycloak_admin_password: secret
       keycloak_url: 'https://samba.{{ domain_name }}:8443'
       ldap_server: "ldaps://samba.{{ domain_name }}:636"
       ldap_base: "{{ ldap_base }}"
