@@ -106,7 +106,7 @@ resource "keycloak_ldap_user_federation" "ldap_user_federation" {
   bind_dn                 = "CN=Alice Lookingglass,OU=Users,OU=Kafka,${var.ldap_base}"
   bind_credential         = "alice-secret"
   search_scope            = "SUBTREE"
-  full_sync_period        = 300 # 5 minutes
+  full_sync_period        = 3600 # 60 minutes
   changed_sync_period     = 60 # 1 minute
 }
 
