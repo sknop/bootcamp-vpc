@@ -38,6 +38,38 @@ provider "keycloak" {
   url           = var.keycloak_url
 }
 
+# Add admin user
+
+data "keycloak_realm" "master" {
+  realm = "master"
+}
+
+resource "keycloak_user" "admin" {
+  realm_id = data.keycloak_realm.master.id
+  username = var.keycloak_admin_user
+
+  initial_password {
+    value = var.keycloak_admin_password
+    temporary = false
+  }
+}
+
+data "keycloak_role" "admin_role" {
+  realm_id = data.keycloak_realm.master.id
+  name = "admin"
+}
+
+resource "keycloak_user_roles" "admin_user_roles" {
+  realm_id = data.keycloak_realm.master.id
+  user_id = keycloak_user.admin.id
+
+  role_ids = [
+    data.keycloak_role.admin_role.id
+  ]
+
+  exhaustive = false
+}
+
 resource "keycloak_realm" "bootcamp" {
   realm         = "Bootcamp"
   enabled       = true
@@ -50,6 +82,8 @@ resource "keycloak_realm" "bootcamp" {
 locals {
   service_clients = csvdecode(file("/home/ubuntu/terraform/${var.service_clients_file}"))
 }
+
+# Add clients
 
 module "clients" {
   count = length(local.service_clients)
@@ -86,6 +120,8 @@ resource "keycloak_openid_client" "c3_sso_login" {
   ]
   client_secret = "c3_sso_login_secret"
 }
+
+# Add LDAP federation
 
 resource "keycloak_ldap_user_federation" "ldap_user_federation" {
   name = "Samba LDAP"
