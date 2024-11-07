@@ -19,6 +19,15 @@ variable "keycloak_admin_password" {
   default = "keycloakpass"
 }
 
+variable "keycloak_tmp_admin" {
+  default = "tmpadm"
+}
+
+variable "keycloak_tmp_secret" {
+  default = "secret"
+}
+
+
 variable "keycloak_url" {
   type = string
 }
@@ -33,8 +42,8 @@ variable "ldap_base" {
 
 provider "keycloak" {
   client_id     = "admin-cli"
-  username      = "tmpadm"
-  password      = "secret"
+  username      = var.keycloak_tmp_admin
+  password      = var.keycloak_tmp_secret
   url           = var.keycloak_url
 }
 
