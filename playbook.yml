@@ -40,3 +40,8 @@
     - postgres
     - keycloak
 
+- hosts: jumphost
+  roles:
+    - jumphost
+
+

@@ -1,0 +1,15 @@
+---
+- name: Install packages
+  package:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  loop:
+    - ansible
+    - openjdk-21-jdk
+    - unzip
+
+- name: Install confluent.platform collection for ansible
+  command:
+    cmd: "ansible-galaxy collection install confluent.platform"
+  become_user: ubuntu
