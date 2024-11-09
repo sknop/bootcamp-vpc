@@ -116,7 +116,7 @@ resource "aws_subnet" "bootcamp-private-subnet" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name = "Bootcamp Private Subnet 1"
+    Name = "Bootcamp Private Subnet ${count.index}"
     owner_email = var.owner_email
     owner_name = var.owner_name
   }
