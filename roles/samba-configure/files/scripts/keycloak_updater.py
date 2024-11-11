@@ -86,6 +86,8 @@ class KeycloakUpdater:
                 grant_type='password',
                 verify='/home/ubuntu/root-ca.pem')
 
+            realms = admin.get_realms() # a hack to establish the connection and authentication ??
+
             admin.change_current_realm(self.keycloak_bootcamp_realm)
 
             c3_sso_login_id = admin.get_client_id(C3_SSO_LOGIN)
