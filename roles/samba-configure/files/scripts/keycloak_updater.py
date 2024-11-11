@@ -5,6 +5,8 @@ import os
 import pathlib
 import fcntl
 
+from ansible_collections.community.network.plugins.module_utils.network.ftd.fdm_swagger_client import \
+    IllegalArgumentException
 from keycloak import KeycloakAdmin
 
 C3_SSO_LOGIN='c3_sso_login'
@@ -87,8 +89,11 @@ class KeycloakUpdater:
                 verify='/home/ubuntu/root-ca.pem')
 
             realms = admin.get_realms() # a hack to establish the connection and authentication ??
-
-            admin.change_current_realm(self.keycloak_bootcamp_realm)
+            realm_names = [ x['realm'] for x in realms ]
+            if self.keycloak_bootcamp_realm in realm_names:
+                admin.change_current_realm(self.keycloak_bootcamp_realm)
+            else:
+                raise IllegalArgumentException(f"Realm {self.keycloak_bootcamp_realm} not found in {realm_names}")
 
             c3_sso_login_id = admin.get_client_id(C3_SSO_LOGIN)
             c3_sso_login_client = admin.get_client(c3_sso_login_id)
