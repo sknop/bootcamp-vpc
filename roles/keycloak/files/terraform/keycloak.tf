@@ -190,3 +190,21 @@ resource "keycloak_ldap_user_attribute_mapper" "lastname" {
   user_model_attribute    = "lastName"
   ldap_attribute          = "sn"
 }
+
+resource "keycloak_ldap_group_mapper" "ldap_group_mapper" {
+  realm_id                = keycloak_realm.bootcamp.id
+  ldap_user_federation_id = keycloak_ldap_user_federation.ldap_user_federation.id
+  name                    = "group-mapper"
+
+  ldap_groups_dn                 = "OU=Groups,OU=Kafka,DC=BOOTCAMP-LONDON,DC=CONFLUENT,DC=IO"
+  group_name_ldap_attribute      = "cn"
+  group_object_classes           = [
+    "group"
+  ]
+  membership_attribute_type      = "DN"
+  membership_ldap_attribute      = "member"
+  membership_user_ldap_attribute = "sAMAccountName"
+  memberof_ldap_attribute        = "memberOf"
+  mode                           = "LDAP_ONLY"
+  user_roles_retrieve_strategy   = "GET_GROUPS_FROM_USER_MEMBEROF_ATTRIBUTE"
+}
