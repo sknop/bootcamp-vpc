@@ -120,6 +120,7 @@ resource "keycloak_openid_client" "c3_sso_login" {
   standard_flow_enabled = true
   direct_access_grants_enabled = true
   service_accounts_enabled = true
+  oauth2_device_authorization_grant_enabled = true
 
   valid_redirect_uris = [
     "https://oauth.pstmn.io/v1/callback"
@@ -207,4 +208,24 @@ resource "keycloak_ldap_group_mapper" "ldap_group_mapper" {
   memberof_ldap_attribute        = "memberOf"
   mode                           = "LDAP_ONLY"
   user_roles_retrieve_strategy   = "GET_GROUPS_FROM_USER_MEMBEROF_ATTRIBUTE"
+}
+
+resource "keycloak_openid_client_scope" "openid_client_scope" {
+  realm_id               = keycloak_realm.bootcamp.id
+  name                   = "groups"
+  description            = "When requested, this scope will map a user's group memberships to a claim"
+  include_in_token_scope = true
+  gui_order              = 1
+}
+
+resource "keycloak_openid_client_default_scopes" "client_default_scope" {
+  realm_id               = keycloak_realm.bootcamp.id
+  client_id              = keycloak_openid_client.c3_sso_login.id
+
+  default_scopes = [
+    "profile",
+    "email",
+    "roles",
+    "groups"
+  ]
 }
