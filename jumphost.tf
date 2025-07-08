@@ -18,10 +18,5 @@ resource "aws_instance" "jumphost" {
     Owner_Email = var.owner_email
     sshUser     = "ubuntu"
     region      = var.region
-    cflt_managed_id   = "user"
-    cflt_managed_by   = "sven"
-    cflt_service      = "CP Bootcamp"
-    cflt_environment  = "dev"
-    cflt_keep_until   = formatdate("YYYY-MM-DD", timeadd(timestamp(),"720h"))
   }
 }
