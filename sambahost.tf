@@ -43,7 +43,7 @@ resource "aws_instance" "sambahost" {
     cflt_managed_id	= var.cflt_managed_id
     cflt_service      = var.cflt_service
     cflt_environment  = var.cflt_environment
-    cflt_keep_until   = formatdate("YYYY-MM-DD", timeadd(timestamp(),"8766"))
+    cflt_keep_until   = formatdate("YYYY-MM-DD", timeadd(timestamp(),"8766h"))
   }
 }
 
