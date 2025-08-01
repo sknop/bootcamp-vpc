@@ -96,3 +96,9 @@ variable "vault-unseal-key-alias" {
 variable "root-zone" {
   type = string
 }
+
+# Let's make it configurable
+variable "checkip-address" {
+  type = string
+  default = "https://icanhazip.com"
+}

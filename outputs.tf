@@ -1,3 +1,8 @@
+output "my-ip-address" {
+  description = "The address shown as my IP address and used for the security groups"
+  value = local.my_ip
+}
+
 output "private-key-name" {
   description = "The private key name needed to log into the jumphost"
   value = local_file.private_key.filename

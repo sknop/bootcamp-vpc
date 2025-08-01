@@ -3,7 +3,7 @@ provider "curl" {
 
 data "curl" "getMyIP" {
   http_method = "GET"
-  uri = "https://checkip.amazonaws.com"
+  uri = var.checkip-address
 }
 
 // Let's add some safety here:
