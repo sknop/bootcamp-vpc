@@ -42,8 +42,13 @@ resource "aws_nat_gateway" "nat" {
 
   tags = {
     Name        = "Bootcamp NAT"
-    owner_email = var.owner_email
-    owner_name = var.owner_name
+
+    cflt_environment = "devel"
+    cflt_partition = "onprem"
+    cflt_managed_by = "user"
+    cflt_managed_id	= "sven"
+    cflt_service = "CTG"
+    cflt_keep_until  = formatdate("YYYY-MM-DD", timeadd(timestamp(),"8766h"))
   }
 }
 
