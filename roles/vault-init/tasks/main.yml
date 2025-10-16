@@ -1,5 +1,5 @@
 - name: Check status of vault
-  shell: vault status -format=yaml
+  shell: vault status -format json
   environment:
     VAULT_ADDR: "http://127.0.0.1:8200"
   register: vault_status_raw
@@ -9,7 +9,7 @@
 
 - name: save vault_status
   set_fact:
-    vault_status: "{{ vault_status_raw.stdout | from_yaml }}"
+    vault_status: "{{ vault_status_raw.stdout | from_json }}"
 
 - name: Initialise Vault operator
   shell: vault operator init -format json
