@@ -14,5 +14,5 @@ cflt_service = "EMEA"
 
 root-zone = "bootcamp.confluent.io"
 samba-instance-type = "t3.large"
-jumphost-instance-type = "t3.micro"
+jumphost-instance-type = "t3.small"
 vault-unseal-key-alias = "alias/vault-unseal-key"

@@ -47,7 +47,7 @@ variable "samba-instance-type" {
 
 variable "jumphost-instance-type" {
   description = "AWS instance type used for jumphost instance"
-  default = "t3.micro"
+  default = "t3.small"
 }
 
 variable "owner_email" {
