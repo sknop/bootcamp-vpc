@@ -12,7 +12,7 @@ owner_name = "Sven Erik Knop"
 cflt_managed_by = "sven"
 cflt_service = "EMEA"
 
-root-zone = "bootcamp.confluent.io"
+root-zone = "bootcamp-region.confluent.io"
 samba-instance-type = "t3.large"
 jumphost-instance-type = "t3.small"
 vault-unseal-key-alias = "alias/vault-unseal-key"
