@@ -48,7 +48,7 @@ resource "aws_nat_gateway" "nat" {
     cflt_managed_by = "user"
     cflt_managed_id	= "sven"
     cflt_service = "CTG"
-    cflt_keep_until  = formatdate("YYYY-MM-DD", timeadd(timestamp(),"8766h"))
+    cflt_keep_until  = local.keep_until_date
   }
 }
 

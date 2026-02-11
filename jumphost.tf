@@ -24,7 +24,7 @@ resource "aws_instance" "jumphost" {
     cflt_managed_id	= var.cflt_managed_id
     cflt_service      = var.cflt_service
     cflt_environment  = var.cflt_environment
-    cflt_keep_until   = formatdate("YYYY-MM-DD", timeadd(timestamp(),"8766h"))
+    cflt_keep_until   = local.keep_until_date
   }
 
   volume_tags = {
@@ -33,6 +33,6 @@ resource "aws_instance" "jumphost" {
     cflt_managed_id	= var.cflt_managed_id
     cflt_service      = var.cflt_service
     cflt_environment  = var.cflt_environment
-    cflt_keep_until   = formatdate("YYYY-MM-DD", timeadd(timestamp(),"8766h"))
+    cflt_keep_until   = local.keep_until_date
   }
 }
