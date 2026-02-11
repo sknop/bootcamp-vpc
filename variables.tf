@@ -102,3 +102,8 @@ variable "checkip-address" {
   type = string
   default = "https://icanhazip.com"
 }
+
+variable "keep-until" {
+  type = number
+  default = 2
+}

@@ -1,5 +1,5 @@
 resource "time_offset" "expiry" {
-  offset_years = 2
+  offset_years = var.keep-until
 }
 
 locals {
