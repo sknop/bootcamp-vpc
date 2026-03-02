@@ -12,7 +12,7 @@ resource "null_resource" "ansible-playbook" {
     aws_instance.jumphost,
     aws_instance.sambahost,
     aws_kms_key.vault,
-    aws_route.public_internet_gateway,
+    module.vpc.public_internet_gateway_route_id
   ]
 }
 
