@@ -25,7 +25,7 @@ output "sambahost-private-ip" {
 
 output "vpc-id" {
   description = "The IP of the bootcamp VPC"
-  value = aws_vpc.vpc.id
+  value = module.vpc.vpc_id
 }
 
 output "internal-vpc-security-group-id" {
@@ -40,17 +40,17 @@ output "external-vpc-security-group-id" {
 
 output "public-subnet-ids" {
   description = "Public subnet for all external-facing instances"
-  value = aws_subnet.bootcamp-public-subnet.*.id
+  value = module.vpc.public_subnets
 }
 
 output "private-subnet-ids" {
   description = "Subnet AZ1 for creating Confluent Cluster"
-  value = aws_subnet.bootcamp-private-subnet.*.id
+  value = module.vpc.private_subnets
 }
 
 output "availability-zones" {
   description = "Availability zones corresponding to the subnet ids"
-  value = aws_subnet.bootcamp-private-subnet.*.availability_zone
+  value = local.azs
 }
 
 output "hosted-zone-id" {
