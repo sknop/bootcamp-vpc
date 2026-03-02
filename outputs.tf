@@ -50,7 +50,7 @@ output "private-subnet-ids" {
 
 output "availability-zones" {
   description = "Availability zones corresponding to the subnet ids"
-  value = local.azs
+  value = [for az in module.vpc.azs : az]
 }
 
 output "hosted-zone-id" {
