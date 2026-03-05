@@ -16,8 +16,7 @@ data "aws_availability_zones" "available" {
 }
 
 locals {
-  len      = length(data.aws_availability_zones.available.names)
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   tags = {
     cflt_environment  = var.cflt_environment
