@@ -8,9 +8,9 @@ variable "inventory_file" {
 
 resource "local_file" "ansible_inventory" {
   content = templatefile("${path.module}/${var.templatefile}", {
-    samba_host = aws_instance.sambahost.public_dns,
+    samba_host = aws_instance.sambahost.public_ip,
     samba_ip_address = aws_instance.sambahost.public_ip,
-    jump_host = aws_instance.jumphost.public_dns,
+    jump_host = aws_instance.jumphost.public_ip,
     private_key = abspath("${path.module}/${local_file.private_key.filename}")
     domain = var.root-zone
     region = var.region
